@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 
 // UnityMenuSimpler v1.0
 // Copyright (c) 2020 gatosyocora
@@ -152,8 +153,8 @@ namespace Gatosyocora.UnityMenuSimpler
                         foreach (var selectedItem in editorWindowInfoList.Where(x => x.Selected))
                         {
                             selectedItem.Selected = false;
-                            // TODO: Ç¢Ç¢ä¥Ç∂Ç…èCê≥ÇµÇ»Ç¢Ç∆Ç¢ÇØÇ»Ç¢
-                            selectedItem.DestMenuItemPath = selectedItem.Name + "/" + selectedItem.DestMenuItemPath;
+                            var filePath = selectedItem.SourceMenuItemPath.Split('/').Last();
+                            selectedItem.DestMenuItemPath = folder.Name + "/" + filePath;
                             folder.EditorWindowList.Add(selectedItem);
                         }
                     }
@@ -254,7 +255,7 @@ namespace Gatosyocora.UnityMenuSimpler
 
             foreach (var editorWindowInfo in editorWindowInfoList)
             {
-                var folderName = editorWindowInfo.SourceMenuItemPath.Split('/').First();
+                var folderName = Regex.Replace(editorWindowInfo.SourceMenuItemPath, "/[^/]+$", string.Empty);
 
                 if (!dict.TryGetValue(folderName, out EditorWindowFolder folder))
                 {
