@@ -6,6 +6,10 @@ using System.Reflection;
 using System;
 using System.IO;
 
+// UnityMenuSimpler v1.0
+// Copyright (c) 2020 gatosyocora
+// MIT License
+
 namespace Gatosyocora.UnityMenuSimpler
 {
     public class UnityMenuSimpler : EditorWindow
