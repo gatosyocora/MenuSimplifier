@@ -35,7 +35,7 @@ namespace Gatosyocora.UnityMenuSimpler
 
         private void OnEnable()
         {
-            LoadEditorWindowList();
+            editorWindowInfoList = LoadEditorWindowList();
         }
 
         private void OnGUI()
@@ -126,9 +126,9 @@ namespace Gatosyocora.UnityMenuSimpler
             return attr.ConstructorArguments.Select(x => x.Value as string).FirstOrDefault();
         }
 
-        private void LoadEditorWindowList()
+        private List<EditorWindowInfo> LoadEditorWindowList()
         {
-            editorWindowInfoList = Assembly.GetExecutingAssembly()
+            return Assembly.GetExecutingAssembly()
                         .GetTypes()
                         .Where(x => ContainAttribute(x, typeof(MenuItem)))
                         .Select(x =>
@@ -181,7 +181,7 @@ namespace Gatosyocora.UnityMenuSimpler
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            LoadEditorWindowList();
+            editorWindowInfoList = LoadEditorWindowList();
         }
 
         private void MoveMenuItemToParent()
@@ -200,7 +200,7 @@ namespace Gatosyocora.UnityMenuSimpler
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            LoadEditorWindowList();
+            editorWindowInfoList = LoadEditorWindowList();
         }
     }
 }
