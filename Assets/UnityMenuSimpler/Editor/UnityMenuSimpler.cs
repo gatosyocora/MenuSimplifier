@@ -17,16 +17,94 @@ namespace Gatosyocora.UnityMenuSimpler
         /// <summary>
         /// EditorWindowスクリプトに関する情報のクラス
         /// </summary>
-        public class EditorWindowInfo
+        public class EditorWindowInfo : IDrawable
         {
             public string Name { get; set; }
-            public string MenuItemPath { get; set; }
+            public string CurrentMenuItemPath { get; set; }
+            public string MovedMenuItemPath { get; set; }
             public string FilePath { get; set; }
             public bool Selected { get; set; }
+            public bool Moved { get; set; }
+
+            public void Draw()
+            {
+
+            }
+        }
+
+        public class EditorWindowFolder : IDrawable
+        {
+            public string Name { get; set; }
+            public List<EditorWindowInfo> EditorWindowList { get; } = new List<EditorWindowInfo>();
+            public List<EditorWindowFolder> EditorWindowFolderList { get; } = new List<EditorWindowFolder>();
+
+            public void Draw()
+            {
+                using (new EditorGUILayout.VerticalScope(GUI.skin.box))
+                {
+                    using (new EditorGUILayout.HorizontalScope())
+                    {
+                        Name = EditorGUILayout.TextField(Name);
+
+                        if (GUILayout.Button("x", GUILayout.Width(30f)))
+                        {
+                            foreach (var editorWindowInfo in EditorWindowList)
+                            {
+                                editorWindowInfo.Moved = false;
+                            }
+                            //folderList.Remove(folder);
+                        }
+                    }
+
+                    foreach (var editorWindowfolder in EditorWindowFolderList.ToList())
+                    {
+                        editorWindowfolder.Draw();
+                    }
+
+                    foreach (var editorWindowInfo in EditorWindowList.ToList())
+                    {
+                        using (new EditorGUILayout.HorizontalScope())
+                        {
+                            EditorGUILayout.LabelField(editorWindowInfo.Name);
+
+                            if (GUILayout.Button("x"))
+                            {
+                                EditorWindowList.Remove(editorWindowInfo);
+                            }
+                        }
+                    }
+
+                    GUILayout.FlexibleSpace();
+
+                    using (new EditorGUI.DisabledGroupScope(string.IsNullOrEmpty(Name)))
+                    {
+                        if (GUILayout.Button("Contain"))
+                        {
+                            //for (int i = 0; i < editorWindowInfoList.Count; i++)
+                            //{
+                            //    if (editorWindowInfoList[i].Selected)
+                            //    {
+                            //        editorWindowInfoList[i].Selected = false;
+                            //        editorWindowInfoList[i].Moved = true;
+                            //        var currentPath = editorWindowInfoList[i].CurrentMenuItemPath;
+                            //        editorWindowInfoList[i].MovedMenuItemPath = folder.Name + "/" + currentPath;
+                            //        folder.EditorWindowList.Add(editorWindowInfoList[i]);
+                            //    }
+                            //}
+                        }
+                    }
+                }
+            }
+        }
+
+        public interface IDrawable
+        {
+            void Draw();
         }
 
         private List<EditorWindowInfo> editorWindowInfoList;
         private string folderName = string.Empty;
+        private List<EditorWindowFolder> folderList;
 
         /// <summary>
         /// MenuItemのフォルダの除外対象
@@ -44,19 +122,37 @@ namespace Gatosyocora.UnityMenuSimpler
         private void OnEnable()
         {
             editorWindowInfoList = LoadEditorWindowList();
+            folderList = CreateExistFolderList(editorWindowInfoList);
         }
 
         private void OnGUI()
         {
             if (editorWindowInfoList != null)
             {
+                EditorGUILayout.Space();
+
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    foreach (var folder in folderList.ToList())
+                    {
+                        folder.Draw();
+                    }
+                }
+
+                EditorGUILayout.Space();
+
+                if (GUILayout.Button("Add Folder"))
+                {
+                    folderList.Add(new EditorWindowFolder());
+                }
+
                 using (var scroll = new EditorGUILayout.ScrollViewScope(scrollPos))
                 {
                     scrollPos = scroll.scrollPosition;
 
                     foreach (var editorWindowInfo in editorWindowInfoList)
                     {
-                        if (string.IsNullOrEmpty(editorWindowInfo.MenuItemPath)) continue;
+                        if (editorWindowInfo.Moved) continue;
 
                         using (new EditorGUILayout.HorizontalScope())
                         {
@@ -64,12 +160,12 @@ namespace Gatosyocora.UnityMenuSimpler
                                                             string.Empty,
                                                             editorWindowInfo.Selected,
                                                             GUILayout.Width(30f));
-                            EditorGUILayout.LabelField(editorWindowInfo.Name, editorWindowInfo.MenuItemPath);
+                            EditorGUILayout.LabelField(editorWindowInfo.Name, editorWindowInfo.CurrentMenuItemPath);
                         }
                     }
                 }
 
-                folderName = EditorGUILayout.TextField("Folder Name", folderName);
+                EditorGUILayout.Space();
 
                 if (GUILayout.Button("Move MenuItem to Child"))
                 {
@@ -156,12 +252,38 @@ namespace Gatosyocora.UnityMenuSimpler
                             new EditorWindowInfo()
                             {
                                 Name = x.Name,
-                                MenuItemPath = GetMenuItemPath(x),
+                                CurrentMenuItemPath = GetMenuItemPath(x),
                                 FilePath = GetFilePath(x),
-                                Selected = false
+                                Selected = false,
+                                Moved = false
                             })
-                        .OrderByDescending(x => x.MenuItemPath)
+                        .Where(x => !string.IsNullOrEmpty(x.CurrentMenuItemPath))
+                        .OrderByDescending(x => x.CurrentMenuItemPath)
                         .ToList();
+        }
+
+        private List<EditorWindowFolder> CreateExistFolderList(List<EditorWindowInfo> editorWindowInfoList)
+        {
+            var dict = new Dictionary<string, EditorWindowFolder>();
+
+            foreach (var editorWindowInfo in editorWindowInfoList)
+            {
+                var folderName = editorWindowInfo.CurrentMenuItemPath.Split('/').First();
+
+                if (!dict.TryGetValue(folderName, out EditorWindowFolder folder))
+                {
+                    folder = new EditorWindowFolder()
+                    {
+                        Name = folderName
+                    };
+                    dict.Add(folderName, folder);
+                }
+
+                folder.EditorWindowList.Add(editorWindowInfo);
+                editorWindowInfo.Moved = true;
+            }
+
+            return dict.Values.ToList();
         }
 
         /// <summary>
@@ -203,7 +325,7 @@ namespace Gatosyocora.UnityMenuSimpler
                 if (!editorWindowInfo.Selected) continue;
 
                 var code = File.ReadAllText(editorWindowInfo.FilePath);
-                code = code.Replace(editorWindowInfo.MenuItemPath, folderName + "/" + editorWindowInfo.MenuItemPath);
+                code = code.Replace(editorWindowInfo.CurrentMenuItemPath, folderName + "/" + editorWindowInfo.CurrentMenuItemPath);
                 File.WriteAllText(editorWindowInfo.FilePath, code);
             }
 
@@ -222,11 +344,11 @@ namespace Gatosyocora.UnityMenuSimpler
             {
                 if (!editorWindowInfo.Selected) continue;
 
-                if (!editorWindowInfo.MenuItemPath.StartsWith(folderName + "/")) continue;
+                if (!editorWindowInfo.CurrentMenuItemPath.StartsWith(folderName + "/")) continue;
 
                 var code = File.ReadAllText(editorWindowInfo.FilePath);
-                var replacedMenuItemPath = editorWindowInfo.MenuItemPath.Remove(0, folderName.Length + 1);
-                code = code.Replace(editorWindowInfo.MenuItemPath, replacedMenuItemPath);
+                var replacedMenuItemPath = editorWindowInfo.CurrentMenuItemPath.Remove(0, folderName.Length + 1);
+                code = code.Replace(editorWindowInfo.CurrentMenuItemPath, replacedMenuItemPath);
                 File.WriteAllText(editorWindowInfo.FilePath, code);
             }
 
