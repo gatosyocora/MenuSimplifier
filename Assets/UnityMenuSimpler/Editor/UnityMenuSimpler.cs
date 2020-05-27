@@ -17,7 +17,7 @@ namespace Gatosyocora.UnityMenuSimpler
         /// <summary>
         /// EditorWindowスクリプトに関する情報のクラス
         /// </summary>
-        public class EditorWindowInfo : IDrawable
+        public class EditorWindowInfo
         {
             public string Name { get; set; }
             public string CurrentMenuItemPath { get; set; }
@@ -25,82 +25,13 @@ namespace Gatosyocora.UnityMenuSimpler
             public string FilePath { get; set; }
             public bool Selected { get; set; }
             public bool Moved { get; set; }
-
-            public void Draw()
-            {
-
-            }
         }
 
-        public class EditorWindowFolder : IDrawable
+        public class EditorWindowFolder
         {
             public string Name { get; set; }
             public List<EditorWindowInfo> EditorWindowList { get; } = new List<EditorWindowInfo>();
             public List<EditorWindowFolder> EditorWindowFolderList { get; } = new List<EditorWindowFolder>();
-
-            public void Draw()
-            {
-                using (new EditorGUILayout.VerticalScope(GUI.skin.box))
-                {
-                    using (new EditorGUILayout.HorizontalScope())
-                    {
-                        Name = EditorGUILayout.TextField(Name);
-
-                        if (GUILayout.Button("x", GUILayout.Width(30f)))
-                        {
-                            foreach (var editorWindowInfo in EditorWindowList)
-                            {
-                                editorWindowInfo.Moved = false;
-                            }
-                            //folderList.Remove(folder);
-                        }
-                    }
-
-                    foreach (var editorWindowfolder in EditorWindowFolderList)
-                    {
-                        editorWindowfolder.Draw();
-                    }
-
-                    foreach (var editorWindowInfo in EditorWindowList.ToList())
-                    {
-                        using (new EditorGUILayout.HorizontalScope())
-                        {
-                            EditorGUILayout.LabelField(editorWindowInfo.Name);
-
-                            if (GUILayout.Button("x"))
-                            {
-                                EditorWindowList.Remove(editorWindowInfo);
-                                editorWindowInfo.Moved = false;
-                            }
-                        }
-                    }
-
-                    GUILayout.FlexibleSpace();
-
-                    using (new EditorGUI.DisabledGroupScope(string.IsNullOrEmpty(Name)))
-                    {
-                        if (GUILayout.Button("Contain"))
-                        {
-                            //for (int i = 0; i < editorWindowInfoList.Count; i++)
-                            //{
-                            //    if (editorWindowInfoList[i].Selected)
-                            //    {
-                            //        editorWindowInfoList[i].Selected = false;
-                            //        editorWindowInfoList[i].Moved = true;
-                            //        var currentPath = editorWindowInfoList[i].CurrentMenuItemPath;
-                            //        editorWindowInfoList[i].MovedMenuItemPath = folder.Name + "/" + currentPath;
-                            //        folder.EditorWindowList.Add(editorWindowInfoList[i]);
-                            //    }
-                            //}
-                        }
-                    }
-                }
-            }
-        }
-
-        public interface IDrawable
-        {
-            void Draw();
         }
 
         private List<EditorWindowInfo> editorWindowInfoList;
@@ -136,7 +67,7 @@ namespace Gatosyocora.UnityMenuSimpler
                 {
                     foreach (var folder in folderList.ToList())
                     {
-                        folder.Draw();
+                        DrawFolder(folder);
                     }
                 }
 
@@ -176,6 +107,65 @@ namespace Gatosyocora.UnityMenuSimpler
                 if (GUILayout.Button("Move MenuItem to Parent"))
                 {
                     MoveMenuItemToParent(folderName);
+                }
+            }
+        }
+
+        private void DrawFolder(EditorWindowFolder folder)
+        {
+            using (new EditorGUILayout.VerticalScope(GUI.skin.box))
+            {
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    folder.Name = EditorGUILayout.TextField(folder.Name);
+
+                    if (GUILayout.Button("x", GUILayout.Width(30f)))
+                    {
+                        foreach (var editorWindowInfo in folder.EditorWindowList)
+                        {
+                            editorWindowInfo.Moved = false;
+                        }
+                        //folderList.Remove(folder);
+                    }
+                }
+
+                foreach (var editorWindowfolder in folder.EditorWindowFolderList)
+                {
+                    editorWindowfolder.Draw();
+                }
+
+                foreach (var editorWindowInfo in folder.EditorWindowList.ToList())
+                {
+                    using (new EditorGUILayout.HorizontalScope())
+                    {
+                        EditorGUILayout.LabelField(editorWindowInfo.Name);
+
+                        if (GUILayout.Button("x"))
+                        {
+                            folder.EditorWindowList.Remove(editorWindowInfo);
+                            editorWindowInfo.Moved = false;
+                        }
+                    }
+                }
+
+                GUILayout.FlexibleSpace();
+
+                using (new EditorGUI.DisabledGroupScope(string.IsNullOrEmpty(folder.Name)))
+                {
+                    if (GUILayout.Button("Contain"))
+                    {
+                        for (int i = 0; i < editorWindowInfoList.Count; i++)
+                            //{
+                            //    if (editorWindowInfoList[i].Selected)
+                            //    {
+                            //        editorWindowInfoList[i].Selected = false;
+                            //        editorWindowInfoList[i].Moved = true;
+                            //        var currentPath = editorWindowInfoList[i].CurrentMenuItemPath;
+                            //        editorWindowInfoList[i].MovedMenuItemPath = Name + "/" + currentPath;
+                            //        folder.EditorWindowList.Add(editorWindowInfoList[i]);
+                            //    }
+                            //}
+                        }
                 }
             }
         }
