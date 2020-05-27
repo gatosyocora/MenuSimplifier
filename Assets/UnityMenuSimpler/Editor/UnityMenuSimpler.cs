@@ -127,9 +127,19 @@ namespace Gatosyocora.UnityMenuSimpler
 
                 foreach (var editorWindowInfo in folder.EditorWindowList.ToList())
                 {
+                    var style = new GUIStyle(EditorStyles.label);
+
                     using (new EditorGUILayout.HorizontalScope())
                     {
-                        EditorGUILayout.LabelField(editorWindowInfo.Name);
+                        if (editorWindowInfo.HasChanged)
+                        {
+                            style.normal.textColor = Color.red;
+                        }
+                        else
+                        {
+                            style.normal.textColor = Color.black;
+                        }
+                        EditorGUILayout.LabelField(editorWindowInfo.Name, style);
 
                         if (GUILayout.Button("x"))
                         {
