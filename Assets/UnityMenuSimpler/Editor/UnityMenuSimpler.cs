@@ -14,6 +14,9 @@ namespace Gatosyocora.UnityMenuSimpler
 {
     public class UnityMenuSimpler : EditorWindow
     {
+        /// <summary>
+        /// EditorWindowスクリプトに関する情報のクラス
+        /// </summary>
         public class EditorWindowInfo
         {
             public string Name { get; set; }
@@ -24,6 +27,11 @@ namespace Gatosyocora.UnityMenuSimpler
 
         private List<EditorWindowInfo> editorWindowInfoList;
         private string folderName = string.Empty;
+
+        /// <summary>
+        /// MenuItemのフォルダの除外対象
+        /// </summary>
+        private readonly static string[] exclusionFolderNames = new string[] { "GameObject", "CONTEXT", "Assets" };
 
         private Vector2 scrollPos = Vector2.zero;
 
@@ -124,7 +132,7 @@ namespace Gatosyocora.UnityMenuSimpler
             var attr = type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)
                         .SelectMany(x => x.CustomAttributes)
                         .Where(x => x.AttributeType == typeof(MenuItem))
-                        .Where(x => !ContainExclusionFolder(x))
+                        .Where(x => !ContainExclusionFolder(x, exclusionFolderNames))
                         .FirstOrDefault();
 
             if (attr == null)
@@ -160,11 +168,10 @@ namespace Gatosyocora.UnityMenuSimpler
         /// パスが除外するフォルダに入ったMenuItemアトリビュートが含まれるか判断する
         /// </summary>
         /// <param name="attrData">アトリビュートのデータ</param>
+        /// <param name="exclusionFolderNames">除外するフォルダの一覧</param>
         /// <returns>含まれる場合true</returns>
-        private bool ContainExclusionFolder(CustomAttributeData attrData)
+        private bool ContainExclusionFolder(CustomAttributeData attrData, IReadOnlyCollection<string> exclusionFolderNames)
         {
-            var exclusionFolderNames = new string[] { "GameObject", "CONTEXT", "Assets"};
-
             foreach (var arg in attrData.ConstructorArguments)
             {
                 var path = arg.Value as string;
