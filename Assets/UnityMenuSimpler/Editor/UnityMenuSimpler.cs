@@ -10,7 +10,7 @@ namespace Gatosyocora.UnityMenuSimpler
 {
     public class UnityMenuSimpler : EditorWindow
     {
-        public class EditorWindowInfo 
+        public class EditorWindowInfo
         {
             public string Name { get; set; }
             public string MenuItemPath { get; set; }
@@ -23,11 +23,11 @@ namespace Gatosyocora.UnityMenuSimpler
 
         private Vector2 scrollPos = Vector2.zero;
 
-        [MenuItem(itemName:"GatoTool/UnityMenuSimpler")]
-		public static void Open()
-		{
-			GetWindow<UnityMenuSimpler>("UnityMenuSimpler");
-		}
+        [MenuItem(itemName: "GatoTool/UnityMenuSimpler")]
+        public static void Open()
+        {
+            GetWindow<UnityMenuSimpler>("UnityMenuSimpler");
+        }
 
         private void OnEnable()
         {
@@ -35,7 +35,7 @@ namespace Gatosyocora.UnityMenuSimpler
         }
 
         private void OnGUI()
-		{
+        {
             if (editorWindowInfoList != null)
             {
                 using (var scroll = new EditorGUILayout.ScrollViewScope(scrollPos))
@@ -49,8 +49,8 @@ namespace Gatosyocora.UnityMenuSimpler
                         using (new EditorGUILayout.HorizontalScope())
                         {
                             editorWindowInfo.Selected = EditorGUILayout.ToggleLeft(
-                                                            string.Empty, 
-                                                            editorWindowInfo.Selected, 
+                                                            string.Empty,
+                                                            editorWindowInfo.Selected,
                                                             GUILayout.Width(30f));
                             EditorGUILayout.LabelField(editorWindowInfo.Name, editorWindowInfo.MenuItemPath);
                         }
@@ -76,7 +76,7 @@ namespace Gatosyocora.UnityMenuSimpler
                     }
                 }
             }
-		}
+        }
 
         private string GetFilePath(Type type)
         {
@@ -105,7 +105,7 @@ namespace Gatosyocora.UnityMenuSimpler
                         .SelectMany(x => x.CustomAttributes)
                         .Any(x => x.AttributeType == attrType);
         }
-        
+
         private string GetMenuItemPath(Type type)
         {
             var attr = type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)
@@ -141,14 +141,14 @@ namespace Gatosyocora.UnityMenuSimpler
 
         private bool ContainExclusionFolder(CustomAttributeData attrData)
         {
-            var exclusionFolderNames = new string[]{"GameObject", "CONTEXT"};
+            var exclusionFolderNames = new string[] { "GameObject", "CONTEXT" };
 
             foreach (var arg in attrData.ConstructorArguments)
             {
                 var path = arg.Value as string;
                 if (string.IsNullOrEmpty(path)) continue;
 
-                if (exclusionFolderNames.Any(x => path.StartsWith(x))) 
+                if (exclusionFolderNames.Any(x => path.StartsWith(x)))
                 {
                     return true;
                 }
