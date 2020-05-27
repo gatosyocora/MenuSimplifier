@@ -131,7 +131,6 @@ namespace Gatosyocora.UnityMenuSimpler
 
                 foreach (var editorWindowfolder in folder.EditorWindowFolderList)
                 {
-                    editorWindowfolder.Draw();
                 }
 
                 foreach (var editorWindowInfo in folder.EditorWindowList.ToList())
@@ -166,6 +165,7 @@ namespace Gatosyocora.UnityMenuSimpler
                             //    }
                             //}
                         }
+                    }
                 }
             }
         }
