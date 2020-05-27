@@ -163,7 +163,7 @@ namespace Gatosyocora.UnityMenuSimpler
         /// <returns>ä‹Ç‹ÇÍÇÈèÍçátrue</returns>
         private bool ContainExclusionFolder(CustomAttributeData attrData)
         {
-            var exclusionFolderNames = new string[] { "GameObject", "CONTEXT" };
+            var exclusionFolderNames = new string[] { "GameObject", "CONTEXT", "Assets"};
 
             foreach (var arg in attrData.ConstructorArguments)
             {
