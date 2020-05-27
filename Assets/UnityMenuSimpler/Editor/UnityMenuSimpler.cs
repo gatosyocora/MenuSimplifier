@@ -65,19 +65,12 @@ namespace Gatosyocora.UnityMenuSimpler
 
                 if (GUILayout.Button("Move MenuItem to Child"))
                 {
-                    if (!string.IsNullOrEmpty(folderName))
-                    {
-                        MoveMenuItemToChildren();
-                    }
-
+                    MoveMenuItemToChildren(folderName);
                 }
 
                 if (GUILayout.Button("Move MenuItem to Parent"))
                 {
-                    if (!string.IsNullOrEmpty(folderName))
-                    {
-                        MoveMenuItemToParent();
-                    }
+                    MoveMenuItemToParent(folderName);
                 }
             }
         }
@@ -194,8 +187,10 @@ namespace Gatosyocora.UnityMenuSimpler
             EditorApplication.ExecuteMenuItem("Assets/Refresh");
         }
 
-        private void MoveMenuItemToChildren()
+        private void MoveMenuItemToChildren(string folderName)
         {
+            if (string.IsNullOrEmpty(folderName)) return;
+
             foreach (var editorWindowInfo in editorWindowInfoList)
             {
                 if (!editorWindowInfo.Selected) continue;
@@ -212,8 +207,10 @@ namespace Gatosyocora.UnityMenuSimpler
             editorWindowInfoList = LoadEditorWindowList();
         }
 
-        private void MoveMenuItemToParent()
+        private void MoveMenuItemToParent(string folderName)
         {
+            if (string.IsNullOrEmpty(folderName)) return;
+
             foreach (var editorWindowInfo in editorWindowInfoList)
             {
                 if (!editorWindowInfo.Selected) continue;
