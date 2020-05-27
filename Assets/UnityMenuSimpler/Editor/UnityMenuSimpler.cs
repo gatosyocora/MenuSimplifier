@@ -153,17 +153,13 @@ namespace Gatosyocora.UnityMenuSimpler
                 {
                     if (GUILayout.Button("Contain"))
                     {
-                        for (int i = 0; i < editorWindowInfoList.Count; i++)
-                            //{
-                            //    if (editorWindowInfoList[i].Selected)
-                            //    {
-                            //        editorWindowInfoList[i].Selected = false;
-                            //        editorWindowInfoList[i].Moved = true;
-                            //        var currentPath = editorWindowInfoList[i].CurrentMenuItemPath;
-                            //        editorWindowInfoList[i].MovedMenuItemPath = Name + "/" + currentPath;
-                            //        folder.EditorWindowList.Add(editorWindowInfoList[i]);
-                            //    }
-                            //}
+                        foreach (var selectedItem in editorWindowInfoList.Where(x => x.Selected))
+                        {
+                            selectedItem.Selected = false;
+                            selectedItem.Moved = true;
+                            var currentPath = selectedItem.CurrentMenuItemPath;
+                            selectedItem.MovedMenuItemPath = selectedItem.Name + "/" + currentPath;
+                            folder.EditorWindowList.Add(selectedItem);
                         }
                     }
                 }
