@@ -100,14 +100,9 @@ namespace Gatosyocora.UnityMenuSimpler
 
                 EditorGUILayout.Space();
 
-                if (GUILayout.Button("Move MenuItem to Child"))
+                if (GUILayout.Button("Apply"))
                 {
-                    MoveMenuItemToChildren(folderName);
-                }
-
-                if (GUILayout.Button("Move MenuItem to Parent"))
-                {
-                    MoveMenuItemToParent(folderName);
+                    ReplaceMenuItem(editorWindowInfoList);
                 }
             }
         }
@@ -302,16 +297,14 @@ namespace Gatosyocora.UnityMenuSimpler
             EditorApplication.ExecuteMenuItem("Assets/Refresh");
         }
 
-        private void MoveMenuItemToChildren(string folderName)
+        private void ReplaceMenuItem(List<EditorWindowInfo> editorWindowInfoList)
         {
-            if (string.IsNullOrEmpty(folderName)) return;
-
             foreach (var editorWindowInfo in editorWindowInfoList)
             {
-                if (!editorWindowInfo.Selected) continue;
+                if (!editorWindowInfo.HasChanged) continue;
 
                 var code = File.ReadAllText(editorWindowInfo.FilePath);
-                code = code.Replace(editorWindowInfo.SourceMenuItemPath, folderName + "/" + editorWindowInfo.SourceMenuItemPath);
+                code = code.Replace(editorWindowInfo.SourceMenuItemPath, editorWindowInfo.DestMenuItemPath);
                 File.WriteAllText(editorWindowInfo.FilePath, code);
             }
 
@@ -320,29 +313,7 @@ namespace Gatosyocora.UnityMenuSimpler
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             editorWindowInfoList = LoadEditorWindowList();
-        }
-
-        private void MoveMenuItemToParent(string folderName)
-        {
-            if (string.IsNullOrEmpty(folderName)) return;
-
-            foreach (var editorWindowInfo in editorWindowInfoList)
-            {
-                if (!editorWindowInfo.Selected) continue;
-
-                if (!editorWindowInfo.SourceMenuItemPath.StartsWith(folderName + "/")) continue;
-
-                var code = File.ReadAllText(editorWindowInfo.FilePath);
-                var replacedMenuItemPath = editorWindowInfo.SourceMenuItemPath.Remove(0, folderName.Length + 1);
-                code = code.Replace(editorWindowInfo.SourceMenuItemPath, replacedMenuItemPath);
-                File.WriteAllText(editorWindowInfo.FilePath, code);
-            }
-
-            ForceCompile();
-
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-            editorWindowInfoList = LoadEditorWindowList();
+            folderList = CreateExistFolderList(editorWindowInfoList);
         }
     }
 }
