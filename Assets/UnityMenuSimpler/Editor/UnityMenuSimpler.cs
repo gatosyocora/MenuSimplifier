@@ -20,8 +20,8 @@ namespace Gatosyocora.UnityMenuSimpler
         public class EditorWindowInfo
         {
             public string Name { get; set; }
-            public string CurrentMenuItemPath { get; set; }
-            public string MovedMenuItemPath { get; set; }
+            public string SourceMenuItemPath { get; set; }
+            public string DestMenuItemPath { get; set; }
             public string FilePath { get; set; }
             public bool Selected { get; set; }
             public bool Moved { get; set; }
@@ -92,7 +92,7 @@ namespace Gatosyocora.UnityMenuSimpler
                                                             string.Empty,
                                                             editorWindowInfo.Selected,
                                                             GUILayout.Width(30f));
-                            EditorGUILayout.LabelField(editorWindowInfo.Name, editorWindowInfo.CurrentMenuItemPath);
+                            EditorGUILayout.LabelField(editorWindowInfo.Name, editorWindowInfo.SourceMenuItemPath);
                         }
                     }
                 }
@@ -157,8 +157,8 @@ namespace Gatosyocora.UnityMenuSimpler
                         {
                             selectedItem.Selected = false;
                             selectedItem.Moved = true;
-                            var currentPath = selectedItem.CurrentMenuItemPath;
-                            selectedItem.MovedMenuItemPath = selectedItem.Name + "/" + currentPath;
+                            var currentPath = selectedItem.SourceMenuItemPath;
+                            selectedItem.DestMenuItemPath = selectedItem.Name + "/" + currentPath;
                             folder.EditorWindowList.Add(selectedItem);
                         }
                     }
@@ -239,13 +239,13 @@ namespace Gatosyocora.UnityMenuSimpler
                             new EditorWindowInfo()
                             {
                                 Name = x.Name,
-                                CurrentMenuItemPath = GetMenuItemPath(x),
+                                SourceMenuItemPath = GetMenuItemPath(x),
                                 FilePath = GetFilePath(x),
                                 Selected = false,
                                 Moved = false
                             })
-                        .Where(x => !string.IsNullOrEmpty(x.CurrentMenuItemPath))
-                        .OrderByDescending(x => x.CurrentMenuItemPath)
+                        .Where(x => !string.IsNullOrEmpty(x.SourceMenuItemPath))
+                        .OrderByDescending(x => x.SourceMenuItemPath)
                         .ToList();
         }
 
@@ -255,7 +255,7 @@ namespace Gatosyocora.UnityMenuSimpler
 
             foreach (var editorWindowInfo in editorWindowInfoList)
             {
-                var folderName = editorWindowInfo.CurrentMenuItemPath.Split('/').First();
+                var folderName = editorWindowInfo.SourceMenuItemPath.Split('/').First();
 
                 if (!dict.TryGetValue(folderName, out EditorWindowFolder folder))
                 {
@@ -312,7 +312,7 @@ namespace Gatosyocora.UnityMenuSimpler
                 if (!editorWindowInfo.Selected) continue;
 
                 var code = File.ReadAllText(editorWindowInfo.FilePath);
-                code = code.Replace(editorWindowInfo.CurrentMenuItemPath, folderName + "/" + editorWindowInfo.CurrentMenuItemPath);
+                code = code.Replace(editorWindowInfo.SourceMenuItemPath, folderName + "/" + editorWindowInfo.SourceMenuItemPath);
                 File.WriteAllText(editorWindowInfo.FilePath, code);
             }
 
@@ -331,11 +331,11 @@ namespace Gatosyocora.UnityMenuSimpler
             {
                 if (!editorWindowInfo.Selected) continue;
 
-                if (!editorWindowInfo.CurrentMenuItemPath.StartsWith(folderName + "/")) continue;
+                if (!editorWindowInfo.SourceMenuItemPath.StartsWith(folderName + "/")) continue;
 
                 var code = File.ReadAllText(editorWindowInfo.FilePath);
-                var replacedMenuItemPath = editorWindowInfo.CurrentMenuItemPath.Remove(0, folderName.Length + 1);
-                code = code.Replace(editorWindowInfo.CurrentMenuItemPath, replacedMenuItemPath);
+                var replacedMenuItemPath = editorWindowInfo.SourceMenuItemPath.Remove(0, folderName.Length + 1);
+                code = code.Replace(editorWindowInfo.SourceMenuItemPath, replacedMenuItemPath);
                 File.WriteAllText(editorWindowInfo.FilePath, code);
             }
 
