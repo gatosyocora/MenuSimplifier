@@ -318,10 +318,8 @@ namespace Gatosyocora.UnityMenuSimpler
                 File.WriteAllText(editorWindowInfo.FilePath, code);
             }
 
-            ForceCompile();
-
             AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
+            AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
             editorWindowInfoList = LoadEditorWindowList();
             folderList = CreateExistFolderList(editorWindowInfoList);
         }
