@@ -70,6 +70,7 @@ namespace Gatosyocora.UnityMenuSimpler
                             if (GUILayout.Button("x"))
                             {
                                 EditorWindowList.Remove(editorWindowInfo);
+                                editorWindowInfo.Moved = false;
                             }
                         }
                     }
