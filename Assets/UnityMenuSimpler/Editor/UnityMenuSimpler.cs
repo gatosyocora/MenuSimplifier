@@ -16,7 +16,7 @@ namespace Gatosyocora.UnityMenuSimpler
     public class UnityMenuSimpler : EditorWindow
     {
         /// <summary>
-        /// EditorWindowƒXƒNƒŠƒvƒg‚ÉŠÖ‚·‚éî•ñ‚ÌƒNƒ‰ƒX
+        /// EditorWindowã‚¹ã‚¯ãƒªãƒ—ãƒˆã«é–¢ã™ã‚‹æƒ…å ±ã®ã‚¯ãƒ©ã‚¹
         /// </summary>
         public class EditorWindowInfo
         {
@@ -40,7 +40,7 @@ namespace Gatosyocora.UnityMenuSimpler
         private List<EditorWindowFolder> folderList;
 
         /// <summary>
-        /// MenuItem‚ÌƒtƒHƒ‹ƒ_‚ÌœŠO‘ÎÛ
+        /// MenuItemã®ãƒ•ã‚©ãƒ«ãƒ€ã®é™¤å¤–å¯¾è±¡
         /// </summary>
         private readonly static string[] exclusionFolderNames = new string[] { "GameObject", "CONTEXT", "Assets" };
 
@@ -163,10 +163,10 @@ namespace Gatosyocora.UnityMenuSimpler
         }
 
         /// <summary>
-        /// “Á’è‚ÌŒ^ƒNƒ‰ƒX‚Ìƒtƒ@ƒCƒ‹‚ÌƒpƒX‚ğAssetsƒtƒHƒ‹ƒ_ˆÈ‰º‚©‚çæ“¾‚·‚é
+        /// ç‰¹å®šã®å‹ã‚¯ãƒ©ã‚¹ã®ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‘ã‚¹ã‚’Assetsãƒ•ã‚©ãƒ«ãƒ€ä»¥ä¸‹ã‹ã‚‰å–å¾—ã™ã‚‹
         /// </summary>
-        /// <param name="type">ƒNƒ‰ƒX‚ÌŒ^</param>
-        /// <returns>ƒtƒ@ƒCƒ‹ƒpƒX</returns>
+        /// <param name="type">ã‚¯ãƒ©ã‚¹ã®å‹</param>
+        /// <returns>ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹</returns>
         private string GetFilePath(Type type)
         {
             var assetGuid = AssetDatabase.FindAssets(type.Name + " t:Script").FirstOrDefault();
@@ -189,11 +189,11 @@ namespace Gatosyocora.UnityMenuSimpler
         }
 
         /// <summary>
-        /// “Á’è‚ÌŒ^‚ÌƒNƒ‰ƒX‚ª“Á’è‚ÌƒAƒgƒŠƒrƒ…[ƒg‚ğ‚Âƒƒ\ƒbƒh‚ğŠÜ‚ñ‚Å‚¢‚é‚©”»’è‚·‚é
+        /// ç‰¹å®šã®å‹ã®ã‚¯ãƒ©ã‚¹ãŒç‰¹å®šã®ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆã‚’æŒã¤ãƒ¡ã‚½ãƒƒãƒ‰ã‚’å«ã‚“ã§ã„ã‚‹ã‹åˆ¤å®šã™ã‚‹
         /// </summary>
-        /// <param name="type">ƒNƒ‰ƒX‚ÌŒ^</param>
-        /// <param name="attrType">ƒAƒgƒŠƒrƒ…[ƒg‚ÌŒ^</param>
-        /// <returns>ŠÜ‚Ü‚ê‚éê‡true</returns>
+        /// <param name="type">ã‚¯ãƒ©ã‚¹ã®å‹</param>
+        /// <param name="attrType">ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆã®å‹</param>
+        /// <returns>å«ã¾ã‚Œã‚‹å ´åˆtrue</returns>
         private bool ContainAttribute(Type type, Type attrType)
         {
             return type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)
@@ -202,10 +202,10 @@ namespace Gatosyocora.UnityMenuSimpler
         }
 
         /// <summary>
-        /// “Á’è‚ÌŒ^‚ÌƒNƒ‰ƒX‚ÌŠÖ”‚ª‚ÂƒAƒgƒŠƒrƒ…[ƒgMenuItem‚ÌƒpƒX‚ğæ“¾‚·‚é
+        /// ç‰¹å®šã®å‹ã®ã‚¯ãƒ©ã‚¹ã®é–¢æ•°ãŒæŒã¤ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆMenuItemã®ãƒ‘ã‚¹ã‚’å–å¾—ã™ã‚‹
         /// </summary>
-        /// <param name="type">MenuItemƒAƒgƒŠƒrƒ…[ƒg‚ğ‚Â‚¯‚½ŠÖ”‚ğ‚ÂƒNƒ‰ƒX‚ÌŒ^</param>
-        /// <returns>MenuItem‚ÌƒpƒX</returns>
+        /// <param name="type">MenuItemã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆã‚’ã¤ã‘ãŸé–¢æ•°ã‚’æŒã¤ã‚¯ãƒ©ã‚¹ã®å‹</param>
+        /// <returns>MenuItemã®ãƒ‘ã‚¹</returns>
         private string GetMenuItemPath(Type type)
         {
             var attr = type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)
@@ -223,9 +223,9 @@ namespace Gatosyocora.UnityMenuSimpler
         }
 
         /// <summary>
-        /// AssetsƒtƒHƒ‹ƒ_ˆÈ‰º‚©‚çMenuItemƒAƒgƒŠƒrƒ…[ƒg‚ğ‚à‚ÂƒXƒNƒŠƒvƒg‚Ìˆê——‚ğæ“¾‚·‚é
+        /// Assetsãƒ•ã‚©ãƒ«ãƒ€ä»¥ä¸‹ã‹ã‚‰MenuItemã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆã‚’ã‚‚ã¤ã‚¹ã‚¯ãƒªãƒ—ãƒˆã®ä¸€è¦§ã‚’å–å¾—ã™ã‚‹
         /// </summary>
-        /// <returns>MenuItemƒAƒgƒŠƒrƒ…[ƒg‚ğ‚à‚ÂƒXƒNƒŠƒvƒg‚ÌƒŠƒXƒg</returns>
+        /// <returns>MenuItemã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆã‚’ã‚‚ã¤ã‚¹ã‚¯ãƒªãƒ—ãƒˆã®ãƒªã‚¹ãƒˆ</returns>
         private List<EditorWindowInfo> LoadEditorWindowList()
         {
             return Assembly.GetExecutingAssembly()
@@ -273,11 +273,11 @@ namespace Gatosyocora.UnityMenuSimpler
         }
 
         /// <summary>
-        /// ƒpƒX‚ªœŠO‚·‚éƒtƒHƒ‹ƒ_‚É“ü‚Á‚½MenuItemƒAƒgƒŠƒrƒ…[ƒg‚ªŠÜ‚Ü‚ê‚é‚©”»’f‚·‚é
+        /// ãƒ‘ã‚¹ãŒé™¤å¤–ã™ã‚‹ãƒ•ã‚©ãƒ«ãƒ€ã«å…¥ã£ãŸMenuItemã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆãŒå«ã¾ã‚Œã‚‹ã‹åˆ¤æ–­ã™ã‚‹
         /// </summary>
-        /// <param name="attrData">ƒAƒgƒŠƒrƒ…[ƒg‚Ìƒf[ƒ^</param>
-        /// <param name="exclusionFolderNames">œŠO‚·‚éƒtƒHƒ‹ƒ_‚Ìˆê——</param>
-        /// <returns>ŠÜ‚Ü‚ê‚éê‡true</returns>
+        /// <param name="attrData">ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆã®ãƒ‡ãƒ¼ã‚¿</param>
+        /// <param name="exclusionFolderNames">é™¤å¤–ã™ã‚‹ãƒ•ã‚©ãƒ«ãƒ€ã®ä¸€è¦§</param>
+        /// <returns>å«ã¾ã‚Œã‚‹å ´åˆtrue</returns>
         private bool ContainExclusionFolder(CustomAttributeData attrData, IReadOnlyCollection<string> exclusionFolderNames)
         {
             foreach (var arg in attrData.ConstructorArguments)
@@ -295,7 +295,7 @@ namespace Gatosyocora.UnityMenuSimpler
         }
 
         /// <summary>
-        /// ‚·‚®‚ÉƒRƒ“ƒpƒCƒ‹‚ğÀs‚·‚é
+        /// ã™ãã«ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã‚’å®Ÿè¡Œã™ã‚‹
         /// </summary>
         private static void ForceCompile()
         {
