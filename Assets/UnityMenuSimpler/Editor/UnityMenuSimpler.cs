@@ -218,6 +218,8 @@ namespace Gatosyocora.UnityMenuSimpler
             {
                 if (!editorWindowInfo.Selected) continue;
 
+                if (!editorWindowInfo.MenuItemPath.StartsWith(folderName + "/")) continue;
+
                 var code = File.ReadAllText(editorWindowInfo.FilePath);
                 var replacedMenuItemPath = editorWindowInfo.MenuItemPath.Remove(0, folderName.Length + 1);
                 code = code.Replace(editorWindowInfo.MenuItemPath, replacedMenuItemPath);
