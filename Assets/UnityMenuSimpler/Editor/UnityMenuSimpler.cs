@@ -82,6 +82,11 @@ namespace Gatosyocora.UnityMenuSimpler
             }
         }
 
+        /// <summary>
+        /// 特定の型クラスのファイルのパスをAssetsフォルダ以下から取得する
+        /// </summary>
+        /// <param name="type">クラスの型</param>
+        /// <returns>ファイルパス</returns>
         private string GetFilePath(Type type)
         {
             var assetGuid = AssetDatabase.FindAssets(type.Name + " t:Script").FirstOrDefault();
@@ -103,6 +108,12 @@ namespace Gatosyocora.UnityMenuSimpler
             return path;
         }
 
+        /// <summary>
+        /// 特定の型のクラスが特定のアトリビュートを持つメソッドを含んでいるか判定する
+        /// </summary>
+        /// <param name="type">クラスの型</param>
+        /// <param name="attrType">アトリビュートの型</param>
+        /// <returns>含まれる場合true</returns>
         private bool ContainAttribute(Type type, Type attrType)
         {
             return type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)
@@ -110,6 +121,11 @@ namespace Gatosyocora.UnityMenuSimpler
                         .Any(x => x.AttributeType == attrType);
         }
 
+        /// <summary>
+        /// 特定の型のクラスの関数が持つアトリビュートMenuItemのパスを取得する
+        /// </summary>
+        /// <param name="type">MenuItemアトリビュートをつけた関数を持つクラスの型</param>
+        /// <returns>MenuItemのパス</returns>
         private string GetMenuItemPath(Type type)
         {
             var attr = type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)
@@ -126,6 +142,10 @@ namespace Gatosyocora.UnityMenuSimpler
             return attr.ConstructorArguments.Select(x => x.Value as string).FirstOrDefault();
         }
 
+        /// <summary>
+        /// Assetsフォルダ以下からMenuItemアトリビュートをもつスクリプトの一覧を取得する
+        /// </summary>
+        /// <returns>MenuItemアトリビュートをもつスクリプトのリスト</returns>
         private List<EditorWindowInfo> LoadEditorWindowList()
         {
             return Assembly.GetExecutingAssembly()
@@ -143,6 +163,11 @@ namespace Gatosyocora.UnityMenuSimpler
                         .ToList();
         }
 
+        /// <summary>
+        /// パスが除外するフォルダに入ったMenuItemアトリビュートが含まれるか判断する
+        /// </summary>
+        /// <param name="attrData">アトリビュートのデータ</param>
+        /// <returns>含まれる場合true</returns>
         private bool ContainExclusionFolder(CustomAttributeData attrData)
         {
             var exclusionFolderNames = new string[] { "GameObject", "CONTEXT" };
@@ -161,6 +186,9 @@ namespace Gatosyocora.UnityMenuSimpler
             return false;
         }
 
+        /// <summary>
+        /// すぐにコンパイルを実行する
+        /// </summary>
         private static void ForceCompile()
         {
             EditorApplication.ExecuteMenuItem("Assets/Refresh");
