@@ -24,7 +24,7 @@ namespace Gatosyocora.UnityMenuSimpler
             public string DestMenuItemPath { get; set; }
             public string FilePath { get; set; }
             public bool Selected { get; set; }
-            public bool Moved { get; set; }
+            public bool HasChanged { get { return SourceMenuItemPath != DestMenuItemPath; } }
         }
 
         public class EditorWindowFolder
@@ -84,7 +84,7 @@ namespace Gatosyocora.UnityMenuSimpler
 
                     foreach (var editorWindowInfo in editorWindowInfoList)
                     {
-                        if (editorWindowInfo.Moved) continue;
+                        if (!string.IsNullOrEmpty(editorWindowInfo.DestMenuItemPath)) continue;
 
                         using (new EditorGUILayout.HorizontalScope())
                         {
@@ -92,7 +92,7 @@ namespace Gatosyocora.UnityMenuSimpler
                                                             string.Empty,
                                                             editorWindowInfo.Selected,
                                                             GUILayout.Width(30f));
-                            EditorGUILayout.LabelField(editorWindowInfo.Name, editorWindowInfo.SourceMenuItemPath);
+                            EditorGUILayout.LabelField(editorWindowInfo.Name, editorWindowInfo.DestMenuItemPath);
                         }
                     }
                 }
@@ -121,10 +121,6 @@ namespace Gatosyocora.UnityMenuSimpler
 
                     if (GUILayout.Button("x", GUILayout.Width(30f)))
                     {
-                        foreach (var editorWindowInfo in folder.EditorWindowList)
-                        {
-                            editorWindowInfo.Moved = false;
-                        }
                         //folderList.Remove(folder);
                     }
                 }
@@ -142,7 +138,7 @@ namespace Gatosyocora.UnityMenuSimpler
                         if (GUILayout.Button("x"))
                         {
                             folder.EditorWindowList.Remove(editorWindowInfo);
-                            editorWindowInfo.Moved = false;
+                            editorWindowInfo.DestMenuItemPath = string.Empty;
                         }
                     }
                 }
@@ -156,9 +152,8 @@ namespace Gatosyocora.UnityMenuSimpler
                         foreach (var selectedItem in editorWindowInfoList.Where(x => x.Selected))
                         {
                             selectedItem.Selected = false;
-                            selectedItem.Moved = true;
-                            var currentPath = selectedItem.SourceMenuItemPath;
-                            selectedItem.DestMenuItemPath = selectedItem.Name + "/" + currentPath;
+                            // TODO: ‚¢‚¢Š´‚¶‚ÉC³‚µ‚È‚¢‚Æ‚¢‚¯‚È‚¢
+                            selectedItem.DestMenuItemPath = selectedItem.Name + "/" + selectedItem.DestMenuItemPath;
                             folder.EditorWindowList.Add(selectedItem);
                         }
                     }
@@ -236,14 +231,18 @@ namespace Gatosyocora.UnityMenuSimpler
                         .GetTypes()
                         .Where(x => ContainAttribute(x, typeof(MenuItem)))
                         .Select(x =>
-                            new EditorWindowInfo()
+                        {
+                            var menuItemPath = GetMenuItemPath(x);
+
+                            return new EditorWindowInfo()
                             {
                                 Name = x.Name,
-                                SourceMenuItemPath = GetMenuItemPath(x),
+                                SourceMenuItemPath = menuItemPath,
+                                DestMenuItemPath = menuItemPath,
                                 FilePath = GetFilePath(x),
-                                Selected = false,
-                                Moved = false
-                            })
+                                Selected = false
+                            };
+                        })
                         .Where(x => !string.IsNullOrEmpty(x.SourceMenuItemPath))
                         .OrderByDescending(x => x.SourceMenuItemPath)
                         .ToList();
@@ -267,7 +266,6 @@ namespace Gatosyocora.UnityMenuSimpler
                 }
 
                 folder.EditorWindowList.Add(editorWindowInfo);
-                editorWindowInfo.Moved = true;
             }
 
             return dict.Values.ToList();
