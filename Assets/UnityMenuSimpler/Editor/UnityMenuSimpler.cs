@@ -125,9 +125,12 @@ namespace Gatosyocora.UnityMenuSimpler
 
                 EditorGUILayout.Space();
 
-                if (GUILayout.Button("Apply"))
+                using (new EditorGUI.DisabledScope(!editorWindowInfoList.Any(x => x.HasChanged)))
                 {
-                    ReplaceMenuItem(editorWindowInfoList);
+                    if (GUILayout.Button("Apply"))
+                    {
+                        ReplaceMenuItem(editorWindowInfoList);
+                    }
                 }
             }
         }
