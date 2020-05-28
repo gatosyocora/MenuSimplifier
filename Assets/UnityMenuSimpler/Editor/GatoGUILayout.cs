@@ -37,7 +37,8 @@ namespace Gatosyocora.UnityMenuSimpler
 
                     if (GUILayout.Button("x", GUILayout.Width(30f)))
                     {
-                        //folderList.Remove(folder);
+                        // TODO: 削除時にすべてのアイテムを外に出してフォルダは削除する
+                        // フォルダごとどこかのフォルダの下に入れるイメージ
                     }
                 }
 
