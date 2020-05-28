@@ -21,5 +21,15 @@ namespace Gatosyocora.UnityMenuSimpler.DataClass
         /// 属している情報をまとめるもののリスト
         /// </summary>
         public List<EditorWindowFolder> EditorWindowFolderList { get; } = new List<EditorWindowFolder>();
+
+        /// <summary>
+        /// 選択状態であるか
+        /// </summary>
+        public bool Selected { get; set; }
+
+        /// <summary>
+        /// 親フォルダ
+        /// </summary>
+        public EditorWindowFolder ParentFolder { get; set; }
     }
 }

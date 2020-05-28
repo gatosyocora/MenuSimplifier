@@ -34,7 +34,12 @@ namespace Gatosyocora.UnityMenuSimpler
             {
                 using (new EditorGUILayout.HorizontalScope())
                 {
+                    folder.Selected = EditorGUILayout.ToggleLeft(string.Empty, folder.Selected, GUILayout.Width(30f));
+
+                    var defaultColor = GUI.backgroundColor;
+                    if (folder.Selected) GUI.backgroundColor = Color.gray;
                     folder.Name = EditorGUILayout.TextField(folder.Name);
+                    GUI.backgroundColor = defaultColor;
 
                     if (GUILayout.Button("x", GUILayout.Width(30f)))
                     {
@@ -45,6 +50,7 @@ namespace Gatosyocora.UnityMenuSimpler
 
                 foreach (var editorWindowfolder in folder.EditorWindowFolderList)
                 {
+                    FolderField(editorWindowfolder);
                 }
 
                 foreach (var editorWindowInfo in folder.EditorWindowList.ToList())
@@ -83,6 +89,8 @@ namespace Gatosyocora.UnityMenuSimpler
                 }
 
                 GUILayout.FlexibleSpace();
+
+                GUI.changed = false;
 
                 using (new EditorGUI.DisabledGroupScope(string.IsNullOrEmpty(folder.Name)))
                 {

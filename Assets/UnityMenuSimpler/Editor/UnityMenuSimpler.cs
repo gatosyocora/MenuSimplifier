@@ -55,6 +55,8 @@ namespace Gatosyocora.UnityMenuSimpler
 
                     foreach (var folder in folderList.ToList())
                     {
+                        if (folder.ParentFolder != null) continue;
+
                         using (var check = new EditorGUI.ChangeCheckScope())
                         {
                             GatoGUILayout.FolderField(folder);
@@ -67,6 +69,15 @@ namespace Gatosyocora.UnityMenuSimpler
                                     var filePath = selectedItem.SourceMenuItemPath.Split('/').Last();
                                     selectedItem.DestMenuItemPath = folder.Name + "/" + filePath;
                                     folder.EditorWindowList.Add(selectedItem);
+                                }
+
+                                foreach (var selectedFolder in folderList.Where(x => x.Selected))
+                                {
+                                    if (selectedFolder == folder) continue;
+
+                                    selectedFolder.Selected = false;
+                                    folder.EditorWindowFolderList.Add(selectedFolder);
+                                    selectedFolder.ParentFolder = folder;
                                 }
                             }
                         }
@@ -215,7 +226,8 @@ namespace Gatosyocora.UnityMenuSimpler
                 {
                     folder = new EditorWindowFolder()
                     {
-                        Name = folderName
+                        Name = folderName,
+                        ParentFolder = null
                     };
                     dict.Add(folderName, folder);
                 }
