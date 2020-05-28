@@ -39,9 +39,7 @@ namespace Gatosyocora.UnityMenuSimpler
             {
                 using (new EditorGUILayout.HorizontalScope())
                 {
-                    var changed = GUI.changed;
-                    folder.Name = EditorGUILayout.TextField(folder.Name);
-                    GUI.changed = changed;
+                    EditorGUILayout.LabelField(folder.Name, EditorStyles.boldLabel);
 
                     if (GUILayout.Button("x", GUILayout.Width(30f)))
                     {
