@@ -87,13 +87,14 @@ namespace Gatosyocora.UnityMenuSimpler
                     {
                         if (!string.IsNullOrEmpty(editorWindowInfo.DestMenuItemPath)) continue;
 
-                        using (new EditorGUILayout.HorizontalScope())
+                        using (var check = new EditorGUI.ChangeCheckScope())
                         {
-                            editorWindowInfo.Selected = EditorGUILayout.ToggleLeft(
-                                                            string.Empty,
-                                                            editorWindowInfo.Selected,
-                                                            GUILayout.Width(30f));
-                            EditorGUILayout.LabelField(editorWindowInfo.Name, editorWindowInfo.DestMenuItemPath);
+                            editorWindowInfo.Selected = GatoGUILayout.ToggleLabelArea(
+                                                            editorWindowInfo.Name, 
+                                                            editorWindowInfo.Selected, 
+                                                            Color.white, Color.grey);
+
+                            if (check.changed) Repaint();
                         }
                     }
                 }
