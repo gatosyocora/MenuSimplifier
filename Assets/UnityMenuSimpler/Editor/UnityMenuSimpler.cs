@@ -25,7 +25,8 @@ namespace Gatosyocora.UnityMenuSimpler
             public string DestMenuItemPath { get; set; }
             public string FilePath { get; set; }
             public bool Selected { get; set; }
-            public bool HasChanged { get { return SourceMenuItemPath != DestMenuItemPath; } }
+            public bool HasChanged { get { return !string.IsNullOrEmpty(DestMenuItemPath) && 
+                                                    SourceMenuItemPath != DestMenuItemPath; } }
         }
 
         public class EditorWindowFolder
