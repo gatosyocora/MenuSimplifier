@@ -44,7 +44,8 @@ namespace Gatosyocora.UnityMenuSimpler
         /// </summary>
         private readonly static string[] exclusionFolderNames = new string[] { "GameObject", "CONTEXT", "Assets" };
 
-        private Vector2 scrollPos = Vector2.zero;
+        private Vector2 unallocatedListScrollPos = Vector2.zero;
+        private Vector2 folderListScrollPos = Vector2.zero;
 
         [MenuItem(itemName: "GatoTool/UnityMenuSimpler")]
         public static void Open()
@@ -64,11 +65,30 @@ namespace Gatosyocora.UnityMenuSimpler
             {
                 EditorGUILayout.Space();
 
+                using (var scroll = new  EditorGUILayout.ScrollViewScope(folderListScrollPos, 
+                                            alwaysShowVertical: false, 
+                                            alwaysShowHorizontal: true))
                 using (new EditorGUILayout.HorizontalScope())
                 {
+                    folderListScrollPos = scroll.scrollPosition;
+
                     foreach (var folder in folderList.ToList())
                     {
-                        DrawFolder(folder);
+                        using (var check = new EditorGUI.ChangeCheckScope())
+                        {
+                            GatoGUILayout.FolderField(folder);
+
+                            if (check.changed)
+                            {
+                                foreach (var selectedItem in editorWindowInfoList.Where(x => x.Selected))
+                                {
+                                    selectedItem.Selected = false;
+                                    var filePath = selectedItem.SourceMenuItemPath.Split('/').Last();
+                                    selectedItem.DestMenuItemPath = folder.Name + "/" + filePath;
+                                    folder.EditorWindowList.Add(selectedItem);
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -83,9 +103,9 @@ namespace Gatosyocora.UnityMenuSimpler
 
                 EditorGUILayout.LabelField("Unallocated", EditorStyles.boldLabel);
 
-                using (var scroll = new EditorGUILayout.ScrollViewScope(scrollPos))
+                using (var scroll = new EditorGUILayout.ScrollViewScope(unallocatedListScrollPos))
                 {
-                    scrollPos = scroll.scrollPosition;
+                    unallocatedListScrollPos = scroll.scrollPosition;
 
                     foreach (var editorWindowInfo in editorWindowInfoList)
                     {
@@ -108,66 +128,6 @@ namespace Gatosyocora.UnityMenuSimpler
                 if (GUILayout.Button("Apply"))
                 {
                     ReplaceMenuItem(editorWindowInfoList);
-                }
-            }
-        }
-
-        private void DrawFolder(EditorWindowFolder folder)
-        {
-            using (new EditorGUILayout.VerticalScope(GUI.skin.box))
-            {
-                using (new EditorGUILayout.HorizontalScope())
-                {
-                    folder.Name = EditorGUILayout.TextField(folder.Name);
-
-                    if (GUILayout.Button("x", GUILayout.Width(30f)))
-                    {
-                        //folderList.Remove(folder);
-                    }
-                }
-
-                foreach (var editorWindowfolder in folder.EditorWindowFolderList)
-                {
-                }
-
-                foreach (var editorWindowInfo in folder.EditorWindowList.ToList())
-                {
-                    var style = new GUIStyle(EditorStyles.label);
-
-                    using (new EditorGUILayout.HorizontalScope())
-                    {
-                        if (editorWindowInfo.HasChanged)
-                        {
-                            style.normal.textColor = Color.red;
-                        }
-                        else
-                        {
-                            style.normal.textColor = Color.black;
-                        }
-                        EditorGUILayout.LabelField(editorWindowInfo.Name, style);
-
-                        if (GUILayout.Button("x"))
-                        {
-                            folder.EditorWindowList.Remove(editorWindowInfo);
-                            editorWindowInfo.DestMenuItemPath = string.Empty;
-                        }
-                    }
-                }
-
-                GUILayout.FlexibleSpace();
-
-                using (new EditorGUI.DisabledGroupScope(string.IsNullOrEmpty(folder.Name)))
-                {
-                    if (GUILayout.Button("Contain"))
-                    {
-                        foreach (var selectedItem in editorWindowInfoList.Where(x => x.Selected))
-                        {
-                            selectedItem.Selected = false;
-                            var filePath = selectedItem.SourceMenuItemPath.Split('/').Last();
-                            selectedItem.DestMenuItemPath = folder.Name + "/" + filePath;
-                            folder.EditorWindowList.Add(selectedItem);
-                        }
-                    }
                 }
             }
         }
