@@ -79,6 +79,10 @@ namespace Gatosyocora.UnityMenuSimpler
                     folderList.Add(new EditorWindowFolder());
                 }
 
+                EditorGUILayout.Space();
+
+                EditorGUILayout.LabelField("Unallocated", EditorStyles.boldLabel);
+
                 using (var scroll = new EditorGUILayout.ScrollViewScope(scrollPos))
                 {
                     scrollPos = scroll.scrollPosition;
