@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Linq;
 using static Gatosyocora.UnityMenuSimpler.UnityMenuSimpler;
+using Gatosyocora.UnityMenuSimpler.DataClass;
 
 namespace Gatosyocora.UnityMenuSimpler
 {

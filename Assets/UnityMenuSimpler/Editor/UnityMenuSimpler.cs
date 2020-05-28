@@ -6,6 +6,7 @@ using System.Reflection;
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using Gatosyocora.UnityMenuSimpler.DataClass;
 
 // UnityMenuSimpler v1.0
 // Copyright (c) 2020 gatosyocora
@@ -15,27 +16,6 @@ namespace Gatosyocora.UnityMenuSimpler
 {
     public class UnityMenuSimpler : EditorWindow
     {
-        /// <summary>
-        /// EditorWindowスクリプトに関する情報のクラス
-        /// </summary>
-        public class EditorWindowInfo
-        {
-            public string Name { get; set; }
-            public string SourceMenuItemPath { get; set; }
-            public string DestMenuItemPath { get; set; }
-            public string FilePath { get; set; }
-            public bool Selected { get; set; }
-            public bool HasChanged { get { return !string.IsNullOrEmpty(DestMenuItemPath) && 
-                                                    SourceMenuItemPath != DestMenuItemPath; } }
-        }
-
-        public class EditorWindowFolder
-        {
-            public string Name { get; set; }
-            public List<EditorWindowInfo> EditorWindowList { get; } = new List<EditorWindowInfo>();
-            public List<EditorWindowFolder> EditorWindowFolderList { get; } = new List<EditorWindowFolder>();
-        }
-
         private List<EditorWindowInfo> editorWindowInfoList;
         private string folderName = string.Empty;
         private List<EditorWindowFolder> folderList;
