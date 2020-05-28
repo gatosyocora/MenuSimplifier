@@ -59,10 +59,9 @@ namespace Gatosyocora.UnityMenuSimpler
 
                         using (var check = new EditorGUI.ChangeCheckScope())
                         {
-                            GatoGUILayout.FolderField(folder);
-
-                            if (check.changed)
+                            if (GatoGUILayout.FolderField(folder))
                             {
+
                                 foreach (var selectedItem in editorWindowInfoList.Where(x => x.Selected))
                                 {
                                     selectedItem.Selected = false;
@@ -79,6 +78,11 @@ namespace Gatosyocora.UnityMenuSimpler
                                     folder.EditorWindowFolderList.Add(selectedFolder);
                                     selectedFolder.ParentFolder = folder;
                                 }
+                            }
+
+                            if (check.changed)
+                            {
+                                Repaint();
                             }
                         }
                     }

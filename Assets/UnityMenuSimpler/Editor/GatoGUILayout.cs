@@ -28,18 +28,20 @@ namespace Gatosyocora.UnityMenuSimpler
             return toggle;
         }
 
-        public static void FolderField(EditorWindowFolder folder)
+        public static bool FolderField(EditorWindowFolder folder)
         {
-            using (new EditorGUILayout.VerticalScope(GUI.skin.box))
+            var defaultColor = GUI.backgroundColor;
+            if (folder.Selected) GUI.backgroundColor = Color.gray;
+
+            var e = Event.current;
+
+            using (var scope = new EditorGUILayout.VerticalScope(GUI.skin.box))
             {
                 using (new EditorGUILayout.HorizontalScope())
                 {
-                    folder.Selected = EditorGUILayout.ToggleLeft(string.Empty, folder.Selected, GUILayout.Width(30f));
-
-                    var defaultColor = GUI.backgroundColor;
-                    if (folder.Selected) GUI.backgroundColor = Color.gray;
+                    var changed = GUI.changed;
                     folder.Name = EditorGUILayout.TextField(folder.Name);
-                    GUI.backgroundColor = defaultColor;
+                    GUI.changed = changed;
 
                     if (GUILayout.Button("x", GUILayout.Width(30f)))
                     {
@@ -90,31 +92,28 @@ namespace Gatosyocora.UnityMenuSimpler
 
                 GUILayout.FlexibleSpace();
 
-                GUI.changed = false;
-
-                using (new EditorGUI.DisabledGroupScope(string.IsNullOrEmpty(folder.Name)))
+                if (scope.rect.Contains(Event.current.mousePosition))
                 {
-                    var rect = EditorGUILayout.GetControlRect(true, EditorGUIUtility.singleLineHeight * 2);
-                    var e = Event.current;
-                    var defaultColor = GUI.backgroundColor;
-                    if (rect.Contains(e.mousePosition))
+                    if (e.type == EventType.MouseDown)
                     {
-                        if (e.type == EventType.MouseMove)
-                        {
-                            DragAndDrop.visualMode = DragAndDropVisualMode.Move;
-                            GUI.backgroundColor = Color.gray;
-                        }
-                        else if (e.type == EventType.MouseUp)
-                        {
-                            GUI.changed = true;
-                        }
+                        folder.Selected = !folder.Selected;
+                        GUI.changed = true;
                     }
-
-                    GUI.Label(rect, "Drag & Drop", GUI.skin.box);
-
-                    GUI.backgroundColor = defaultColor;
+                    else if (e.type == EventType.MouseMove)
+                    {
+                        GUI.changed = true;
+                    }
+                    else if (e.type == EventType.MouseUp)
+                    {
+                        GUI.changed = true;
+                        return true;
+                    }
                 }
+
+                GUI.backgroundColor = defaultColor;
             }
+
+            return false;
         }
     }
 }
