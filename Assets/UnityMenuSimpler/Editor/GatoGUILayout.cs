@@ -69,6 +69,17 @@ namespace Gatosyocora.UnityMenuSimpler
                             editorWindowInfo.DestMenuItemPath = string.Empty;
                         }
                     }
+
+                    if (editorWindowInfo.HasChanged)
+                    {
+                        using (new EditorGUI.IndentLevelScope())
+                        {
+                            var pathStyle = new GUIStyle(GUI.skin.label);
+                            pathStyle.wordWrap = true;
+                            EditorGUILayout.LabelField(editorWindowInfo.SourceMenuItemPath, pathStyle);
+                            EditorGUILayout.LabelField("→ " + editorWindowInfo.DestMenuItemPath, pathStyle);
+                        }
+                    }
                 }
 
                 GUILayout.FlexibleSpace();
