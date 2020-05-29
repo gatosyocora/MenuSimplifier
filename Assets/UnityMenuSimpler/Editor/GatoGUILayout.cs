@@ -5,6 +5,7 @@ using UnityEditor;
 using System.Linq;
 using static Gatosyocora.UnityMenuSimpler.UnityMenuSimpler;
 using Gatosyocora.UnityMenuSimpler.DataClass;
+using System;
 
 namespace Gatosyocora.UnityMenuSimpler
 {
@@ -28,7 +29,7 @@ namespace Gatosyocora.UnityMenuSimpler
             return toggle;
         }
 
-        public static bool FolderField(EditorWindowFolder folder)
+        public static bool FolderField(EditorWindowFolder folder, Action AllIn, Action DeleteSelf)
         {
             var defaultColor = GUI.backgroundColor;
             if (folder.Selected) GUI.backgroundColor = Color.gray;
@@ -78,7 +79,7 @@ namespace Gatosyocora.UnityMenuSimpler
                     {
                         foreach (var editorWindowfolder in folder.EditorWindowFolderList)
                         {
-                            FolderField(editorWindowfolder);
+                            FolderField(editorWindowfolder, AllIn, DeleteSelf);
                         }
 
                         foreach (var editorWindowInfo in folder.EditorWindowList.ToList())
@@ -114,6 +115,22 @@ namespace Gatosyocora.UnityMenuSimpler
                                     EditorGUILayout.LabelField("→ " + editorWindowInfo.DestMenuItemPath, pathStyle);
                                 }
                             }
+                        }
+                    }
+                }
+
+                if (folder.EditorWindowFolderList.Count == 0 &&
+                    folder.EditorWindowList.Count == 0)
+                {
+                    using (new EditorGUI.DisabledScope(string.IsNullOrEmpty(folder.Name)))
+                    {
+                        if (GUILayout.Button("All In"))
+                        {
+                            AllIn();
+                        }
+                        if (GUILayout.Button("Delete"))
+                        {
+                            DeleteSelf();
                         }
                     }
                 }
