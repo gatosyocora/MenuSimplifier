@@ -359,12 +359,14 @@ namespace Gatosyocora.UnityMenuSimpler
                 {
                     if (!matchWithReplaced.Success) continue;
 
+                    // 追加した行のみを削除する
                     code = code.Replace(matchWithReplaced.Value, 
                             $"{matchWithReplaced.Groups["line2prefix"]}{matchWithReplaced.Groups["replaced"]}{matchWithReplaced.Groups["line2end"]}");
                 }
                 // 一度でも編集済みかどうか
                 else if (matchWithReplaced.Success)
                 {
+                    // 追加したアトリビュートのパスを変更する
                     code = code.Replace(matchWithReplaced.Value,
                             $"{matchWithReplaced.Groups["indent"]}{matchWithReplaced.Groups["keyword"]}{matchWithReplaced.Groups["line1"]}{matchWithReplaced.Groups["line2prefix"]}{editorWindowInfo.DestMenuItemPath}{matchWithReplaced.Groups["line2end"]}");
                 }
@@ -374,6 +376,7 @@ namespace Gatosyocora.UnityMenuSimpler
 
                     if (match.Success)
                     {
+                        // 元のアトリビュートをコメントアウトしてアトリビュートを複製, 変更する
                         code = code.Replace(match.Value,
                             $"{match.Groups["indent"]}//{T00L_KEYWORD}{match.Value.Substring(match.Groups["indent"].Length)}" +
                             $"{match.Groups["indent"]}{match.Groups["part1"]}{editorWindowInfo.DestMenuItemPath}{match.Groups["part2"]}");
