@@ -341,14 +341,6 @@ namespace Gatosyocora.UnityMenuSimpler
         }
 
         /// <summary>
-        /// すぐにコンパイルを実行する
-        /// </summary>
-        private static void ForceCompile()
-        {
-            EditorApplication.ExecuteMenuItem("Assets/Refresh");
-        }
-
-        /// <summary>
         /// MenuItemのパスを変更する
         /// </summary>
         /// <param name="editorWindowInfoList"></param>
