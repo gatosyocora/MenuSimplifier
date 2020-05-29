@@ -122,10 +122,11 @@ namespace Gatosyocora.UnityMenuSimpler
                         {
                             AllIn();
                         }
-                        if (GUILayout.Button("Delete"))
-                        {
-                            DeleteSelf();
-                        }
+                    }
+
+                    if (GUILayout.Button("Delete"))
+                    {
+                        DeleteSelf();
                     }
                 }
 
