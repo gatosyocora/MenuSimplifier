@@ -28,6 +28,11 @@ namespace Gatosyocora.UnityMenuSimpler.DataClass
         public bool Selected { get; set; }
 
         /// <summary>
+        ///　閉じられた状態であるか
+        /// </summary>
+        public bool Foldout { get; set; }
+
+        /// <summary>
         /// 親フォルダ
         /// </summary>
         public EditorWindowFolder ParentFolder { get; set; }
