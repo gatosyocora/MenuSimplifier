@@ -334,7 +334,7 @@ namespace Gatosyocora.UnityMenuSimpler
 
                 var code = File.ReadAllText(editorWindowInfo.FilePath);
 
-                var regexWithReplaced = new Regex(@"(?<indent>(\t|\s)*)(?<keyword>\/\/" + Regex.Escape(T00L_KEYWORD) + @")(?<line1>\[MenuItem\(.*\)].*)(?<line2prefix>(\n|\r|\t|\s)*\[MenuItem\("")(?<replaced>.*)(?<line2end>"".*\)])");
+                var regexWithReplaced = new Regex(@"(?<indent>(\t|\s)*)(?<keyword>\/\/" + Regex.Escape(T00L_KEYWORD) + @")(?<line1>\[MenuItem\(.*\)].*)(?<line2prefix>(\n|\r|\t|\s)*\[MenuItem\("")(?<replaced>.*)(?<line2end>"".*\)].*(\n|\r)+)");
                 var matchWithReplaced = regexWithReplaced.Match(code);
 
                 if (reset)
@@ -343,7 +343,7 @@ namespace Gatosyocora.UnityMenuSimpler
 
                     // 追加した行のみを削除する
                     code = code.Replace(matchWithReplaced.Value, 
-                            $"{matchWithReplaced.Groups["line2prefix"]}{matchWithReplaced.Groups["replaced"]}{matchWithReplaced.Groups["line2end"]}");
+                            $"{matchWithReplaced.Groups["indent"]}{matchWithReplaced.Groups["line1"]}");
                 }
                 // 一度でも編集済みかどうか
                 else if (matchWithReplaced.Success)
