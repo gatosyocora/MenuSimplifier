@@ -29,7 +29,9 @@ namespace Gatosyocora.UnityMenuSimpler
         private Vector2 folderListScrollPos = Vector2.zero;
         private Rect folderRect;
 
-        [MenuItem(itemName: "GatoTool/UnityMenuSimpler")]
+        private readonly static string T00L_KEYWORD = "UNITYMENUSIMPLER:";
+
+        [MenuItem("GatoTool/UnityMenuSimpler")]
         public static void Open()
         {
             GetWindow<UnityMenuSimpler>("UnityMenuSimpler");
@@ -341,6 +343,10 @@ namespace Gatosyocora.UnityMenuSimpler
             EditorApplication.ExecuteMenuItem("Assets/Refresh");
         }
 
+        /// <summary>
+        /// MenuItemのパスを変更する
+        /// </summary>
+        /// <param name="editorWindowInfoList"></param>
         private void ReplaceMenuItem(List<EditorWindowInfo> editorWindowInfoList)
         {
             foreach (var editorWindowInfo in editorWindowInfoList)
@@ -348,7 +354,29 @@ namespace Gatosyocora.UnityMenuSimpler
                 if (!editorWindowInfo.HasChanged) continue;
 
                 var code = File.ReadAllText(editorWindowInfo.FilePath);
-                code = code.Replace(editorWindowInfo.SourceMenuItemPath, editorWindowInfo.DestMenuItemPath);
+
+                var regexWithReplaced = new Regex(@"(?<part1>\/\/" + Regex.Escape(T00L_KEYWORD) + @"\[MenuItem\(.*\)](\n|\t|\s|\r)*\[MenuItem\("")(?<replaced>.*)(?<part2>"".*\)])");
+                var matchWithReplaced = regexWithReplaced.Match(code);
+
+                // 一度でも編集済みかどうか
+                if (matchWithReplaced.Success)
+                {
+                    code = code.Replace(matchWithReplaced.Value,
+                            $"{matchWithReplaced.Groups["part1"]}{editorWindowInfo.DestMenuItemPath}{matchWithReplaced.Groups["part2"]}");
+                }
+                else
+                {
+                    var match = Regex.Match(code, @"(?<indent>(\t|\s)*)(?<part1>\[MenuItem\("")(?<menuitem>.*)(?<part2>"".*\)])");
+
+                    if (match.Success)
+                    {
+                        Debug.Log("Sucess:" + match.Value);
+                        code = code.Replace(match.Value,
+                            $"{match.Groups["indent"]}//{T00L_KEYWORD}{match.Value.Substring(match.Groups["indent"].Length)}" +
+                            $"{match.Groups["indent"]}{match.Groups["part1"]}{editorWindowInfo.DestMenuItemPath}{match.Groups["part2"]}");
+                    }
+                }
+
                 File.WriteAllText(editorWindowInfo.FilePath, code);
             }
 
