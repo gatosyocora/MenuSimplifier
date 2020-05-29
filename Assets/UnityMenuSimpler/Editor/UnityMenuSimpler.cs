@@ -57,14 +57,12 @@ namespace Gatosyocora.UnityMenuSimpler
                     folderListScrollPos = scroll.scrollPosition;
                     folderRect = scope.rect;
 
-                    foreach (var folder in folderList.ToList())
+                    foreach (var folder in folderList.Where(x => x.ParentFolder == null).ToList())
                     {
-                        if (folder.ParentFolder != null) continue;
-
                         using (var check = new EditorGUI.ChangeCheckScope())
                         {
                             if (GatoGUILayout.FolderField(folder, 
-                                () => MoveFolder(folder, folderList.Where(x => x != folder)), 
+                                () => MoveFolder(folder, folderList.Where(x => x != folder && x.ParentFolder == null)), 
                                 () => folderList.Remove(folder)))
                             {
                                 // ファイルを移動させたときの処理
@@ -112,25 +110,21 @@ namespace Gatosyocora.UnityMenuSimpler
 
                 if (GatoGUILayout.DropArea("Drop SubFolder", EditorGUIUtility.singleLineHeight * 4f))
                 {
-                    foreach (var folder in folderList.ToArray())
+                    foreach (var selectedFolder in folderList.Where(x => x.Selected).ToArray())
                     {
-                        foreach (var selectedFolder in folder.EditorWindowFolderList.Where(x => x.Selected))
+                        selectedFolder.Selected = false;
+
+                        if (selectedFolder.ParentFolder == null) continue;
+
+                        var parentFolder = selectedFolder.ParentFolder;
+                        var parentFolderPath = GetMenuItemFolderPath(parentFolder);
+                        parentFolder.EditorWindowFolderList.Remove(selectedFolder);
+                        selectedFolder.ParentFolder = null;
+
+                        var folderPath = GetMenuItemFolderPath(selectedFolder);
+                        foreach (var containItem in selectedFolder.EditorWindowList)
                         {
-                            selectedFolder.Selected = false;
-
-                            if (selectedFolder.ParentFolder == null) continue;
-
-                            var parentFolder = selectedFolder.ParentFolder;
-                            var parentFolderPath = GetMenuItemFolderPath(parentFolder);
-                            parentFolder.EditorWindowFolderList.Remove(selectedFolder);
-                            folderList.Add(selectedFolder);
-                            selectedFolder.ParentFolder = null;
-
-                            var folderPath = GetMenuItemFolderPath(selectedFolder);
-                            foreach (var containItem in selectedFolder.EditorWindowList)
-                            {
-                                containItem.DestMenuItemPath = folderPath + "/" + containItem.SourceMenuItemPath.Split('/').Last();
-                            }
+                            containItem.DestMenuItemPath = folderPath + "/" + containItem.SourceMenuItemPath.Split('/').Last();
                         }
                     }
                 }
@@ -301,7 +295,6 @@ namespace Gatosyocora.UnityMenuSimpler
                     dict[keyName].Name = keyName.Split('/').Last();
                     dict[keyName].ParentFolder = parentFolder;
                     parentFolder.EditorWindowFolderList.Add(dict[keyName]);
-                    dict.Remove(keyName);
                 }
             }
 
