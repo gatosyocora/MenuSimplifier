@@ -61,7 +61,7 @@ namespace Gatosyocora.UnityMenuSimpler
                         {
                             if (GatoGUILayout.FolderField(folder))
                             {
-
+                                // ファイルを移動させたときの処理
                                 foreach (var selectedItem in editorWindowInfoList.Where(x => x.Selected))
                                 {
                                     if (folder.EditorWindowList.Contains(selectedItem)) continue;
@@ -72,6 +72,7 @@ namespace Gatosyocora.UnityMenuSimpler
                                     folder.EditorWindowList.Add(selectedItem);
                                 }
 
+                                // フォルダを移動させたときの処理
                                 foreach (var selectedFolder in folderList.Where(x => x.Selected))
                                 {
                                     if (selectedFolder == folder ||
@@ -85,6 +86,12 @@ namespace Gatosyocora.UnityMenuSimpler
                                     selectedFolder.Selected = false;
                                     folder.EditorWindowFolderList.Add(selectedFolder);
                                     selectedFolder.ParentFolder = folder;
+
+                                    // フォルダに属するファイルへの処理
+                                    foreach (var containItem in selectedFolder.EditorWindowList)
+                                    {
+                                        containItem.DestMenuItemPath = folder.Name + "/" + containItem.DestMenuItemPath;
+                                    }
                                 }
                             }
 
