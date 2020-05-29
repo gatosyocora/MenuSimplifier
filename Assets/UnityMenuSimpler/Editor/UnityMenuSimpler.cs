@@ -66,15 +66,7 @@ namespace Gatosyocora.UnityMenuSimpler
                                 () => folderList.Remove(folder)))
                             {
                                 // ファイルを移動させたときの処理
-                                foreach (var selectedItem in editorWindowInfoList.Where(x => x.Selected))
-                                {
-                                    if (folder.EditorWindowList.Contains(selectedItem)) continue;
-
-                                    selectedItem.Selected = false;
-                                    var filePath = selectedItem.SourceMenuItemPath.Split('/').Last();
-                                    selectedItem.DestMenuItemPath = folder.Name + "/" + filePath;
-                                    folder.EditorWindowList.Add(selectedItem);
-                                }
+                                MoveFile(folder, editorWindowInfoList.Where(x => x.Selected));
 
                                 // フォルダを移動させたときの処理
                                 MoveFolder(folder, folderList.Where(x => x.Selected));
@@ -87,6 +79,7 @@ namespace Gatosyocora.UnityMenuSimpler
                         }
                     }
 
+                    // 自動スクロール
                     var e = Event.current;
                     if (e.type == EventType.MouseDrag)
                     {
@@ -257,6 +250,11 @@ namespace Gatosyocora.UnityMenuSimpler
                         .ToList();
         }
 
+        /// <summary>
+        /// 存在するフォルダのリストを作成する
+        /// </summary>
+        /// <param name="editorWindowInfoList">MenuItemの情報のリスト</param>
+        /// <returns></returns>
         private List<EditorWindowFolder> CreateExistFolderList(List<EditorWindowInfo> editorWindowInfoList)
         {
             var dict = new Dictionary<string, EditorWindowFolder>();
@@ -326,7 +324,8 @@ namespace Gatosyocora.UnityMenuSimpler
         /// <summary>
         /// MenuItemのパスを変更する
         /// </summary>
-        /// <param name="editorWindowInfoList"></param>
+        /// <param name="editorWindowInfoList">フォルダのリスト</param>
+        /// <param name="reset">パスを初期状態に戻すかどうか</param>
         private void ReplaceMenuItem(List<EditorWindowInfo> editorWindowInfoList, bool reset = false)
         {
             foreach (var editorWindowInfo in editorWindowInfoList)
@@ -375,6 +374,11 @@ namespace Gatosyocora.UnityMenuSimpler
             folderList = CreateExistFolderList(editorWindowInfoList);
         }
 
+        /// <summary>
+        /// MenuItemのフォルダのパスを取得する
+        /// </summary>
+        /// <param name="folder">パスを取得するフォルダ</param>
+        /// <returns></returns>
         private string GetMenuItemFolderPath(EditorWindowFolder folder)
         {
             var currentFolder = folder;
@@ -389,10 +393,28 @@ namespace Gatosyocora.UnityMenuSimpler
         }
 
         /// <summary>
-        /// フォルダを別のフォルダに移動させたときの処理
+        /// 複数のMenuItemの情報（ファイル）をフォルダに移動させる
         /// </summary>
         /// <param name="folder"></param>
-        /// <param name="selectedFolderList"></param>
+        /// <param name="items"></param>
+        private void MoveFile(EditorWindowFolder folder, IEnumerable<EditorWindowInfo> items)
+        {
+            foreach (var selectedItem in items)
+            {
+                if (folder.EditorWindowList.Contains(selectedItem)) continue;
+
+                selectedItem.Selected = false;
+                var filePath = selectedItem.SourceMenuItemPath.Split('/').Last();
+                selectedItem.DestMenuItemPath = folder.Name + "/" + filePath;
+                folder.EditorWindowList.Add(selectedItem);
+            }
+        }
+
+        /// <summary>
+        /// 複数のフォルダを別のフォルダに移動させる
+        /// </summary>
+        /// <param name="folder">移動先のフォルダ</param>
+        /// <param name="selectedFolderList">移動させられるフォルダのリスト</param>
         private void MoveFolder(EditorWindowFolder folder, IEnumerable<EditorWindowFolder> selectedFolderList)
         {
             foreach (var selectedFolder in selectedFolderList)
