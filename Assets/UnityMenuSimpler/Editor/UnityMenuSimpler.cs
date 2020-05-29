@@ -107,7 +107,11 @@ namespace Gatosyocora.UnityMenuSimpler
 
                 if (GUILayout.Button("Add Folder"))
                 {
-                    folderList.Add(new EditorWindowFolder());
+                    var newFolder = new EditorWindowFolder()
+                    {
+                        NameEdittable = true
+                    };
+                    folderList.Add(newFolder);
                 }
 
                 EditorGUILayout.Space();
@@ -246,7 +250,8 @@ namespace Gatosyocora.UnityMenuSimpler
                     folder = new EditorWindowFolder()
                     {
                         Name = folderName,
-                        ParentFolder = null
+                        ParentFolder = null,
+                        NameEdittable = false
                     };
                     dict.Add(folderName, folder);
                 }

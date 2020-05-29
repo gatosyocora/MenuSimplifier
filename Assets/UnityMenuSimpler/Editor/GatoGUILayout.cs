@@ -43,7 +43,20 @@ namespace Gatosyocora.UnityMenuSimpler
                 {
                     if (folder.ParentFolder == null)
                     {
-                        EditorGUILayout.LabelField(folder.Name, EditorStyles.boldLabel);
+                        if (folder.NameEdittable)
+                        {
+                            folder.Name = EditorGUILayout.TextField(folder.Name);
+
+                            if (e.Equals(Event.KeyboardEvent("return")) && !string.IsNullOrEmpty(folder.Name))
+                            {
+                                folder.NameEdittable = false;
+                                GUI.changed = true;
+                            }
+                        }
+                        else
+                        {
+                            EditorGUILayout.LabelField(folder.Name, EditorStyles.boldLabel);
+                        }
                     }
                     else
                     {

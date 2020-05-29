@@ -33,6 +33,11 @@ namespace Gatosyocora.UnityMenuSimpler.DataClass
         public bool Foldout { get; set; }
 
         /// <summary>
+        /// 名前を変更可能か
+        /// </summary>
+        public bool NameEdittable { get; set; }
+
+        /// <summary>
         /// 親フォルダ
         /// </summary>
         public EditorWindowFolder ParentFolder { get; set; }
