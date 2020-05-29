@@ -254,14 +254,17 @@ namespace Gatosyocora.UnityMenuSimpler
                 folder.EditorWindowList.Add(editorWindowInfo);
             }
 
+            // パスが深いところから処理していく
             var orderedKeys = dict.Keys.OrderByDescending(x => x);
 
             foreach (var keyName in orderedKeys)
             {
+                // ルートフォルダなので親フォルダを探さなくてよい
                 if (keyName.IndexOf('/') == -1) continue;
 
                 var parentFolderName = Regex.Replace(keyName, "/[^/]+$", string.Empty);
 
+                // 親フォルダが見つかったのでフォルダ情報を変更する
                 if (dict.TryGetValue(parentFolderName, out EditorWindowFolder parentFolder))
                 {
                     dict[keyName].Name = keyName.Split('/').Last();
