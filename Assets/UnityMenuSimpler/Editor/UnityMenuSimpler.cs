@@ -64,6 +64,8 @@ namespace Gatosyocora.UnityMenuSimpler
 
                                 foreach (var selectedItem in editorWindowInfoList.Where(x => x.Selected))
                                 {
+                                    if (folder.EditorWindowList.Contains(selectedItem)) continue;
+
                                     selectedItem.Selected = false;
                                     var filePath = selectedItem.SourceMenuItemPath.Split('/').Last();
                                     selectedItem.DestMenuItemPath = folder.Name + "/" + filePath;
@@ -72,7 +74,8 @@ namespace Gatosyocora.UnityMenuSimpler
 
                                 foreach (var selectedFolder in folderList.Where(x => x.Selected))
                                 {
-                                    if (selectedFolder == folder) continue;
+                                    if (selectedFolder == folder ||
+                                        folder.EditorWindowFolderList.Contains(selectedFolder)) continue;
 
                                     selectedFolder.Selected = false;
                                     folder.EditorWindowFolderList.Add(selectedFolder);
