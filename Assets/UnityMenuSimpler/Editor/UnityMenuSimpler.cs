@@ -77,6 +77,11 @@ namespace Gatosyocora.UnityMenuSimpler
                                     if (selectedFolder == folder ||
                                         folder.EditorWindowFolderList.Contains(selectedFolder)) continue;
 
+                                    if (selectedFolder.ParentFolder != null)
+                                    {
+                                        selectedFolder.ParentFolder.EditorWindowFolderList.Remove(selectedFolder);
+                                    }
+
                                     selectedFolder.Selected = false;
                                     folder.EditorWindowFolderList.Add(selectedFolder);
                                     selectedFolder.ParentFolder = folder;
