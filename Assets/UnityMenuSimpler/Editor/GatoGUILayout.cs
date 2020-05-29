@@ -35,6 +35,8 @@ namespace Gatosyocora.UnityMenuSimpler
 
             var e = Event.current;
 
+            Rect itemRect;
+
             using (var scope = new EditorGUILayout.VerticalScope(GUI.skin.box))
             {
                 using (new EditorGUILayout.HorizontalScope())
@@ -48,58 +50,63 @@ namespace Gatosyocora.UnityMenuSimpler
                     }
                 }
 
-                foreach (var editorWindowfolder in folder.EditorWindowFolderList)
+                using (var itemsScope = new EditorGUILayout.VerticalScope())
                 {
-                    FolderField(editorWindowfolder);
-                }
+                    itemRect = itemsScope.rect;
 
-                foreach (var editorWindowInfo in folder.EditorWindowList.ToList())
-                {
-                    var style = new GUIStyle(EditorStyles.label);
-
-                    using (new EditorGUILayout.HorizontalScope())
+                    foreach (var editorWindowfolder in folder.EditorWindowFolderList)
                     {
+                        FolderField(editorWindowfolder);
+                    }
+
+                    foreach (var editorWindowInfo in folder.EditorWindowList.ToList())
+                    {
+                        var style = new GUIStyle(EditorStyles.label);
+
+                        using (new EditorGUILayout.HorizontalScope())
+                        {
+                            if (editorWindowInfo.HasChanged)
+                            {
+                                style.normal.textColor = Color.red;
+                            }
+                            else
+                            {
+                                style.normal.textColor = Color.black;
+                            }
+                            EditorGUILayout.LabelField(editorWindowInfo.Name, style);
+
+                            if (GUILayout.Button("x"))
+                            {
+                                folder.EditorWindowList.Remove(editorWindowInfo);
+                                editorWindowInfo.DestMenuItemPath = string.Empty;
+                            }
+                        }
+
                         if (editorWindowInfo.HasChanged)
                         {
-                            style.normal.textColor = Color.red;
-                        }
-                        else
-                        {
-                            style.normal.textColor = Color.black;
-                        }
-                        EditorGUILayout.LabelField(editorWindowInfo.Name, style);
-
-                        if (GUILayout.Button("x"))
-                        {
-                            folder.EditorWindowList.Remove(editorWindowInfo);
-                            editorWindowInfo.DestMenuItemPath = string.Empty;
-                        }
-                    }
-
-                    if (editorWindowInfo.HasChanged)
-                    {
-                        using (new EditorGUI.IndentLevelScope())
-                        {
-                            var pathStyle = new GUIStyle(GUI.skin.label);
-                            pathStyle.wordWrap = true;
-                            EditorGUILayout.LabelField(editorWindowInfo.SourceMenuItemPath, pathStyle);
-                            EditorGUILayout.LabelField("→ " + editorWindowInfo.DestMenuItemPath, pathStyle);
+                            using (new EditorGUI.IndentLevelScope())
+                            {
+                                var pathStyle = new GUIStyle(GUI.skin.label);
+                                pathStyle.wordWrap = true;
+                                EditorGUILayout.LabelField(editorWindowInfo.SourceMenuItemPath, pathStyle);
+                                EditorGUILayout.LabelField("→ " + editorWindowInfo.DestMenuItemPath, pathStyle);
+                            }
                         }
                     }
                 }
+
+                GUI.backgroundColor = defaultColor;
 
                 GUILayout.FlexibleSpace();
 
-                if (scope.rect.Contains(Event.current.mousePosition))
+
+                if (scope.rect.Contains(e.mousePosition) && !itemRect.Contains(e.mousePosition))
                 {
                     if (e.type == EventType.MouseDown)
                     {
+                        GUI.changed = true;
                         folder.Selected = !folder.Selected;
-                        GUI.changed = true;
-                    }
-                    else if (e.type == EventType.MouseMove)
-                    {
-                        GUI.changed = true;
+
                     }
                     else if (e.type == EventType.MouseUp)
                     {
@@ -108,7 +115,6 @@ namespace Gatosyocora.UnityMenuSimpler
                     }
                 }
 
-                GUI.backgroundColor = defaultColor;
             }
 
             return false;
