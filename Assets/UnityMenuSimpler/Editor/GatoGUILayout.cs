@@ -63,12 +63,6 @@ namespace Gatosyocora.UnityMenuSimpler
                     {
                         folder.Foldout = EditorGUILayout.Foldout(folder.Foldout, folder.Name);
                     }
-
-                    if (GUILayout.Button("x", GUILayout.Width(30f)))
-                    {
-                        // TODO: 削除時にすべてのアイテムを外に出してフォルダは削除する
-                        // フォルダごとどこかのフォルダの下に入れるイメージ
-                    }
                 }
 
                 using (var itemsScope = new EditorGUILayout.VerticalScope())
