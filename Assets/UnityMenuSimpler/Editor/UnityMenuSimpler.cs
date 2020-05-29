@@ -27,6 +27,7 @@ namespace Gatosyocora.UnityMenuSimpler
 
         private Vector2 unallocatedListScrollPos = Vector2.zero;
         private Vector2 folderListScrollPos = Vector2.zero;
+        private Rect folderRect;
 
         [MenuItem(itemName: "GatoTool/UnityMenuSimpler")]
         public static void Open()
@@ -49,9 +50,10 @@ namespace Gatosyocora.UnityMenuSimpler
                 using (var scroll = new  EditorGUILayout.ScrollViewScope(folderListScrollPos, 
                                             alwaysShowVertical: false, 
                                             alwaysShowHorizontal: true))
-                using (new EditorGUILayout.HorizontalScope())
+                using (var scope = new EditorGUILayout.HorizontalScope())
                 {
                     folderListScrollPos = scroll.scrollPosition;
+                    folderRect = scope.rect;
 
                     foreach (var folder in folderList.ToList())
                     {
@@ -107,6 +109,8 @@ namespace Gatosyocora.UnityMenuSimpler
 
                 if (GUILayout.Button("Add Folder"))
                 {
+                    folderListScrollPos.x = folderRect.width;
+
                     var newFolder = new EditorWindowFolder()
                     {
                         NameEdittable = true
