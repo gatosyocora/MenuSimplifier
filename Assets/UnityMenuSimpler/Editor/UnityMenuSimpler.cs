@@ -63,7 +63,8 @@ namespace Gatosyocora.UnityMenuSimpler
                         {
                             if (GatoGUILayout.FolderField(folder, 
                                 () => MoveFolder(folder, folderList.Where(x => x != folder && x.ParentFolder == null)), 
-                                () => folderList.Remove(folder)))
+                                () => folderList.Remove(folder),
+                                (f) => DropSubFolder(f)))
                             {
                                 // ファイルを移動させたときの処理
                                 MoveFile(folder, editorWindowInfoList.Where(x => x.Selected));
@@ -109,16 +110,7 @@ namespace Gatosyocora.UnityMenuSimpler
 
                         if (selectedFolder.ParentFolder == null) continue;
 
-                        var parentFolder = selectedFolder.ParentFolder;
-                        var parentFolderPath = GetMenuItemFolderPath(parentFolder);
-                        parentFolder.EditorWindowFolderList.Remove(selectedFolder);
-                        selectedFolder.ParentFolder = null;
-
-                        var folderPath = GetMenuItemFolderPath(selectedFolder);
-                        foreach (var containItem in selectedFolder.EditorWindowList)
-                        {
-                            containItem.DestMenuItemPath = folderPath + "/" + containItem.SourceMenuItemPath.Split('/').Last();
-                        }
+                        DropSubFolder(selectedFolder);
                     }
                 }
 
@@ -436,6 +428,26 @@ namespace Gatosyocora.UnityMenuSimpler
                 {
                     containItem.DestMenuItemPath = folder.Name + "/" + containItem.DestMenuItemPath;
                 }
+            }
+        }
+
+        /// <summary>
+        /// フォルダを親フォルダから抜けさせる
+        /// </summary>
+        /// <param name="folder">抜けるフォルダ</param>
+        private void DropSubFolder(EditorWindowFolder folder)
+        {
+            if (folder.ParentFolder == null) return;
+
+            var parentFolder = folder.ParentFolder;
+            var parentFolderPath = GetMenuItemFolderPath(parentFolder);
+            parentFolder.EditorWindowFolderList.Remove(folder);
+            folder.ParentFolder = null;
+
+            var folderPath = GetMenuItemFolderPath(folder);
+            foreach (var containItem in folder.EditorWindowList)
+            {
+                containItem.DestMenuItemPath = folderPath + "/" + containItem.SourceMenuItemPath.Split('/').Last();
             }
         }
     }
