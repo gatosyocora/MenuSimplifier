@@ -130,6 +130,13 @@ namespace Gatosyocora.UnityMenuSimpler
                             }
                         }
                     }
+
+                    var e = Event.current;
+                    if (e.type == EventType.MouseDrag)
+                    {
+                        folderListScrollPos.x = Mathf.Clamp(e.mousePosition.x - position.x, 0, scope.rect.width);
+                        Repaint();
+                    }
                 }
 
                 EditorGUILayout.Space();
