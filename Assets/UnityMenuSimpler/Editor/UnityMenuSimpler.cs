@@ -49,8 +49,8 @@ namespace Gatosyocora.UnityMenuSimpler
             {
                 EditorGUILayout.Space();
 
-                using (var scroll = new  EditorGUILayout.ScrollViewScope(folderListScrollPos, 
-                                            alwaysShowVertical: false, 
+                using (var scroll = new EditorGUILayout.ScrollViewScope(folderListScrollPos,
+                                            alwaysShowVertical: false,
                                             alwaysShowHorizontal: true))
                 using (var scope = new EditorGUILayout.HorizontalScope())
                 {
@@ -106,7 +106,7 @@ namespace Gatosyocora.UnityMenuSimpler
                         }
                     }
 
-                    if(GatoGUILayout.DropArea("Drop SubFolder", EditorGUIUtility.singleLineHeight * 5f))
+                    if (GatoGUILayout.DropArea("Drop SubFolder", EditorGUIUtility.singleLineHeight * 5f))
                     {
                         foreach (var folder in folderList.ToArray())
                         {
@@ -160,8 +160,8 @@ namespace Gatosyocora.UnityMenuSimpler
                         using (var check = new EditorGUI.ChangeCheckScope())
                         {
                             editorWindowInfo.Selected = GatoGUILayout.ToggleLabelArea(
-                                                            editorWindowInfo.Name, 
-                                                            editorWindowInfo.Selected, 
+                                                            editorWindowInfo.Name,
+                                                            editorWindowInfo.Selected,
                                                             Color.white, Color.grey);
 
                             if (check.changed) Repaint();
