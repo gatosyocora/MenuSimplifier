@@ -116,7 +116,7 @@ namespace Gatosyocora.UnityMenuSimpler
                 if (folder.EditorWindowFolderList.Count == 0 &&
                     folder.EditorWindowList.Count == 0)
                 {
-                    using (new EditorGUI.DisabledScope(string.IsNullOrEmpty(folder.Name)))
+                    using (new EditorGUI.DisabledScope(folder.NameEdittable))
                     {
                         if (GUILayout.Button("All In"))
                         {
