@@ -254,6 +254,23 @@ namespace Gatosyocora.UnityMenuSimpler
                 folder.EditorWindowList.Add(editorWindowInfo);
             }
 
+            var orderedKeys = dict.Keys.OrderByDescending(x => x);
+
+            foreach (var keyName in orderedKeys)
+            {
+                if (keyName.IndexOf('/') == -1) continue;
+
+                var parentFolderName = Regex.Replace(keyName, "/[^/]+$", string.Empty);
+
+                if (dict.TryGetValue(parentFolderName, out EditorWindowFolder parentFolder))
+                {
+                    dict[keyName].Name = keyName.Split('/').Last();
+                    dict[keyName].ParentFolder = parentFolder;
+                    parentFolder.EditorWindowFolderList.Add(dict[keyName]);
+                    dict.Remove(keyName);
+                }
+            }
+
             return dict.Values.ToList();
         }
 
