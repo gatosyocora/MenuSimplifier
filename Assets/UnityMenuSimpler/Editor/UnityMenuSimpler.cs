@@ -178,6 +178,11 @@ namespace Gatosyocora.UnityMenuSimpler
                         ReplaceMenuItem(editorWindowInfoList);
                     }
                 }
+
+                if (GUILayout.Button("All Reset"))
+                {
+                    ReplaceMenuItem(editorWindowInfoList, true);
+                }
             }
         }
 
@@ -347,22 +352,29 @@ namespace Gatosyocora.UnityMenuSimpler
         /// MenuItemのパスを変更する
         /// </summary>
         /// <param name="editorWindowInfoList"></param>
-        private void ReplaceMenuItem(List<EditorWindowInfo> editorWindowInfoList)
+        private void ReplaceMenuItem(List<EditorWindowInfo> editorWindowInfoList, bool reset = false)
         {
             foreach (var editorWindowInfo in editorWindowInfoList)
             {
-                if (!editorWindowInfo.HasChanged) continue;
+                if (!editorWindowInfo.HasChanged && !reset) continue;
 
                 var code = File.ReadAllText(editorWindowInfo.FilePath);
 
-                var regexWithReplaced = new Regex(@"(?<part1>\/\/" + Regex.Escape(T00L_KEYWORD) + @"\[MenuItem\(.*\)](\n|\t|\s|\r)*\[MenuItem\("")(?<replaced>.*)(?<part2>"".*\)])");
+                var regexWithReplaced = new Regex(@"(?<indent>(\t|\s)*)(?<keyword>\/\/" + Regex.Escape(T00L_KEYWORD) + @")(?<line1>\[MenuItem\(.*\)].*)(?<line2prefix>(\n|\r|\t|\s)*\[MenuItem\("")(?<replaced>.*)(?<line2end>"".*\)])");
                 var matchWithReplaced = regexWithReplaced.Match(code);
 
+                if (reset)
+                {
+                    if (!matchWithReplaced.Success) continue;
+
+                    code = code.Replace(matchWithReplaced.Value, 
+                            $"{matchWithReplaced.Groups["line2prefix"]}{matchWithReplaced.Groups["replaced"]}{matchWithReplaced.Groups["line2end"]}");
+                }
                 // 一度でも編集済みかどうか
-                if (matchWithReplaced.Success)
+                else if (matchWithReplaced.Success)
                 {
                     code = code.Replace(matchWithReplaced.Value,
-                            $"{matchWithReplaced.Groups["part1"]}{editorWindowInfo.DestMenuItemPath}{matchWithReplaced.Groups["part2"]}");
+                            $"{matchWithReplaced.Groups["indent"]}{matchWithReplaced.Groups["keyword"]}{matchWithReplaced.Groups["line1"]}{matchWithReplaced.Groups["line2prefix"]}{editorWindowInfo.DestMenuItemPath}{matchWithReplaced.Groups["line2end"]}");
                 }
                 else
                 {
@@ -370,7 +382,6 @@ namespace Gatosyocora.UnityMenuSimpler
 
                     if (match.Success)
                     {
-                        Debug.Log("Sucess:" + match.Value);
                         code = code.Replace(match.Value,
                             $"{match.Groups["indent"]}//{T00L_KEYWORD}{match.Value.Substring(match.Groups["indent"].Length)}" +
                             $"{match.Groups["indent"]}{match.Groups["part1"]}{editorWindowInfo.DestMenuItemPath}{match.Groups["part2"]}");
