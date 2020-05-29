@@ -103,6 +103,31 @@ namespace Gatosyocora.UnityMenuSimpler
                             }
                         }
                     }
+
+                    if(GatoGUILayout.DropArea("Drop SubFolder", EditorGUIUtility.singleLineHeight * 5f))
+                    {
+                        foreach (var folder in folderList.ToArray())
+                        {
+                            foreach (var selectedFolder in folder.EditorWindowFolderList.Where(x => x.Selected))
+                            {
+                                selectedFolder.Selected = false;
+
+                                if (selectedFolder.ParentFolder == null) continue;
+
+                                var parentFolder = selectedFolder.ParentFolder;
+                                var parentFolderPath = GetMenuItemFolderPath(parentFolder);
+                                parentFolder.EditorWindowFolderList.Remove(selectedFolder);
+                                folderList.Add(selectedFolder);
+                                selectedFolder.ParentFolder = null;
+
+                                var folderPath = GetMenuItemFolderPath(selectedFolder);
+                                foreach (var containItem in selectedFolder.EditorWindowList)
+                                {
+                                    containItem.DestMenuItemPath = folderPath + "/" + containItem.SourceMenuItemPath.Split('/').Last();
+                                }
+                            }
+                        }
+                    }
                 }
 
                 EditorGUILayout.Space();
@@ -331,6 +356,19 @@ namespace Gatosyocora.UnityMenuSimpler
             AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
             editorWindowInfoList = LoadEditorWindowList();
             folderList = CreateExistFolderList(editorWindowInfoList);
+        }
+
+        private string GetMenuItemFolderPath(EditorWindowFolder folder)
+        {
+            var currentFolder = folder;
+            var path = folder.Name;
+            while (currentFolder.ParentFolder != null)
+            {
+                path = folder.ParentFolder.Name + "/" + path;
+                currentFolder = folder.ParentFolder;
+            }
+
+            return path;
         }
     }
 }

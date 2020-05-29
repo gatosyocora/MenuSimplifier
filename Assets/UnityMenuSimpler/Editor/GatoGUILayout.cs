@@ -141,5 +141,17 @@ namespace Gatosyocora.UnityMenuSimpler
 
             return false;
         }
+
+        public static bool DropArea(string label, float height)
+        {
+            var rect = EditorGUILayout.GetControlRect(true, height);
+            GUI.Label(rect, label, GUI.skin.box);
+            var e = Event.current;
+            if (rect.Contains(e.mousePosition) && e.type == EventType.MouseUp) 
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }
