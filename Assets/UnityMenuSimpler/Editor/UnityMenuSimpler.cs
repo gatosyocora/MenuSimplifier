@@ -106,31 +106,6 @@ namespace Gatosyocora.UnityMenuSimpler
                         }
                     }
 
-                    if (GatoGUILayout.DropArea("Drop SubFolder", EditorGUIUtility.singleLineHeight * 5f))
-                    {
-                        foreach (var folder in folderList.ToArray())
-                        {
-                            foreach (var selectedFolder in folder.EditorWindowFolderList.Where(x => x.Selected))
-                            {
-                                selectedFolder.Selected = false;
-
-                                if (selectedFolder.ParentFolder == null) continue;
-
-                                var parentFolder = selectedFolder.ParentFolder;
-                                var parentFolderPath = GetMenuItemFolderPath(parentFolder);
-                                parentFolder.EditorWindowFolderList.Remove(selectedFolder);
-                                folderList.Add(selectedFolder);
-                                selectedFolder.ParentFolder = null;
-
-                                var folderPath = GetMenuItemFolderPath(selectedFolder);
-                                foreach (var containItem in selectedFolder.EditorWindowList)
-                                {
-                                    containItem.DestMenuItemPath = folderPath + "/" + containItem.SourceMenuItemPath.Split('/').Last();
-                                }
-                            }
-                        }
-                    }
-
                     var e = Event.current;
                     if (e.type == EventType.MouseDrag)
                     {
@@ -150,6 +125,31 @@ namespace Gatosyocora.UnityMenuSimpler
                         NameEdittable = true
                     };
                     folderList.Add(newFolder);
+                }
+
+                if (GatoGUILayout.DropArea("Drop SubFolder", EditorGUIUtility.singleLineHeight * 4f))
+                {
+                    foreach (var folder in folderList.ToArray())
+                    {
+                        foreach (var selectedFolder in folder.EditorWindowFolderList.Where(x => x.Selected))
+                        {
+                            selectedFolder.Selected = false;
+
+                            if (selectedFolder.ParentFolder == null) continue;
+
+                            var parentFolder = selectedFolder.ParentFolder;
+                            var parentFolderPath = GetMenuItemFolderPath(parentFolder);
+                            parentFolder.EditorWindowFolderList.Remove(selectedFolder);
+                            folderList.Add(selectedFolder);
+                            selectedFolder.ParentFolder = null;
+
+                            var folderPath = GetMenuItemFolderPath(selectedFolder);
+                            foreach (var containItem in selectedFolder.EditorWindowList)
+                            {
+                                containItem.DestMenuItemPath = folderPath + "/" + containItem.SourceMenuItemPath.Split('/').Last();
+                            }
+                        }
+                    }
                 }
 
                 EditorGUILayout.Space();
