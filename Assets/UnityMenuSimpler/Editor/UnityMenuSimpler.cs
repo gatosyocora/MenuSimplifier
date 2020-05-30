@@ -250,21 +250,13 @@ namespace Gatosyocora.UnityMenuSimpler
         /// </summary>
         /// <param name="type">MenuItemアトリビュートをつけた関数を持つクラスの型</param>
         /// <returns>MenuItemのパス</returns>
-        private string GetMenuItemPath(Type type)
-        {
-            var attr = type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)
-                        .SelectMany(x => x.CustomAttributes)
-                        .Where(x => x.AttributeType == typeof(MenuItem))
-                        .Where(x => !ContainExclusionFolder(x, exclusionFolderNames))
-                        .FirstOrDefault();
-
-            if (attr == null)
-            {
-                return string.Empty;
-            }
-
-            return attr.ConstructorArguments.Select(x => x.Value as string).FirstOrDefault();
-        }
+        private IEnumerable<string> GetMenuItemPaths(Type type) =>
+            type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)
+            .SelectMany(x => x.CustomAttributes)
+            .Where(x => x.AttributeType == typeof(MenuItem) && !ContainExclusionFolder(x, exclusionFolderNames))
+            .SelectMany(x => x.ConstructorArguments)
+            .Where(x => x.Value is string)
+            .Select(x => x.Value.ToString());
 
         /// <summary>
         /// Assetsフォルダ以下からMenuItemアトリビュートをもつスクリプトの一覧を取得する
@@ -275,19 +267,19 @@ namespace Gatosyocora.UnityMenuSimpler
             return Assembly.GetExecutingAssembly()
                         .GetTypes()
                         .Where(x => ContainAttribute(x, typeof(MenuItem)))
-                        .Select(x =>
-                        {
-                            var menuItemPath = GetMenuItemPath(x);
-
-                            return new EditorWindowInfo()
+                        .SelectMany(x => GetMenuItemPaths(x)
+                            .Select(path =>
                             {
-                                Name = menuItemPath.Split('/').Last(),
-                                SourceMenuItemPath = menuItemPath,
-                                DestMenuItemPath = menuItemPath,
-                                FilePath = GetFilePath(x),
-                                Selected = false
-                            };
-                        })
+                                return new EditorWindowInfo()
+                                {
+                                    Name = path.Split('/').Last(),
+                                    SourceMenuItemPath = path,
+                                    DestMenuItemPath = path,
+                                    FilePath = GetFilePath(x),
+                                    Selected = false
+                                };
+                            })
+                        )
                         .Where(x => !string.IsNullOrEmpty(x.SourceMenuItemPath))
                         .OrderByDescending(x => x.SourceMenuItemPath)
                         .ToList();
