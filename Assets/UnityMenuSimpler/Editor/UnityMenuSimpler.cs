@@ -363,35 +363,30 @@ namespace Gatosyocora.UnityMenuSimpler
 
                 var code = File.ReadAllText(editorWindowInfo.FilePath);
 
-                var regexWithReplaced = new Regex(@"(?<indent>(\t|\s)*)(?<keyword>\/\/" + Regex.Escape(T00L_KEYWORD) + @")(?<line1>\[MenuItem\(.*\)].*)(?<line2prefix>(\n|\r|\t|\s)*\[MenuItem\("")(?<replaced>.*)(?<line2end>"".*\)].*(\n|\r)+)");
-                var matchWithReplaced = regexWithReplaced.Match(code);
+                var resetPartten = @"(?<keyword>// UNITYMENUSIMPLER: )(?<original>\[MenuItem\(.*\)\](\r\n|\r|\n))(?<replaced>\s*\[MenuItem\(.*\)\].*(\r\n|\r|\n))";
+                var resetMatch = Regex.Match(code, resetPartten);
+
+                var overrideWritePattern = @"(?<prefix>// UNITYMENUSIMPLER: \[MenuItem\(.*\)\]\s+\[MenuItem\("")(?<replaced>.*)(?<suffix>"".*\)\])";
+                var overrideWriteMatch = Regex.Match(code, overrideWritePattern);
 
                 if (reset)
                 {
-                    if (!matchWithReplaced.Success) continue;
+                    if (!resetMatch.Success) continue;
 
-                    // 追加した行のみを削除する
-                    code = code.Replace(matchWithReplaced.Value,
-                            $"{matchWithReplaced.Groups["indent"]}{matchWithReplaced.Groups["line1"]}");
+                    // 複製によって追加したアトリビュートとコメントアウトのためのスラッシュとキーワードを削除
+                    code = Regex.Replace(code, resetPartten, m => $"{m.Groups["original"]}");
                 }
-                // 一度でも編集済みかどうか
-                else if (matchWithReplaced.Success)
+                else if (overrideWriteMatch.Success)
                 {
-                    // 追加したアトリビュートのパスを変更する
-                    code = code.Replace(matchWithReplaced.Value,
-                            $"{matchWithReplaced.Groups["indent"]}{matchWithReplaced.Groups["keyword"]}{matchWithReplaced.Groups["line1"]}{matchWithReplaced.Groups["line2prefix"]}{editorWindowInfo.DestMenuItemPath}{matchWithReplaced.Groups["line2end"]}");
+                    // 一度でも変更済みなら追加したアトリビュートを変更する
+                    code = Regex.Replace(code, overrideWritePattern, m => $"{m.Groups["prefix"]}{editorWindowInfo.DestMenuItemPath}{m.Groups["suffix"]}");
                 }
                 else
                 {
-                    var match = Regex.Match(code, @"(?<indent>(\t|\s)*)(?<part1>\[MenuItem\("")(?<menuitem>.*)(?<part2>"".*\)])");
-
-                    if (match.Success)
-                    {
-                        // 元のアトリビュートをコメントアウトしてアトリビュートを複製, 変更する
-                        code = code.Replace(match.Value,
-                            $"{match.Groups["indent"]}//{T00L_KEYWORD}{match.Value.Substring(match.Groups["indent"].Length)}" +
-                            $"{match.Groups["indent"]}{match.Groups["part1"]}{editorWindowInfo.DestMenuItemPath}{match.Groups["part2"]}");
-                    }
+                    // まだ変更していないならアトリビュートを複製によって追加し変更する
+                    // 元のアトリビュートはコメントアウトしてキーワードをつけておく
+                    var duplicatePattern = @"(?<indent>( |\t)*)(?<prefix>\[MenuItem\("")(?<replaced>.*)(?<suffix>"".*\)\])(?<newline>(\r\n|\r|\n))";
+                    code = Regex.Replace(code, duplicatePattern, m => $"{m.Groups["indent"]}// {TOOL_KEYWORD} {m.Groups["prefix"]}{m.Groups["replaced"]}{m.Groups["suffix"]}{m.Groups["newline"]}{m.Groups["indent"]}{m.Groups["prefix"]}{editorWindowInfo.DestMenuItemPath}{m.Groups["suffix"]}{m.Groups["newline"]}");
                 }
 
                 File.WriteAllText(editorWindowInfo.FilePath, code);
