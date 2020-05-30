@@ -238,12 +238,10 @@ namespace Gatosyocora.UnityMenuSimpler
         /// <param name="type">クラスの型</param>
         /// <param name="attrType">アトリビュートの型</param>
         /// <returns>含まれる場合true</returns>
-        private bool ContainAttribute(Type type, Type attrType)
-        {
-            return type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)
-                        .SelectMany(x => x.CustomAttributes)
-                        .Any(x => x.AttributeType == attrType);
-        }
+        private bool ContainAttribute(Type type, Type attrType) =>
+                type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)
+                .SelectMany(x => x.CustomAttributes)
+                .Any(x => x.AttributeType == attrType);
 
         /// <summary>
         /// 特定の型のクラスの関数が持つアトリビュートMenuItemのパスを取得する
