@@ -147,13 +147,20 @@ namespace Gatosyocora.UnityMenuSimpler
                     if (e.type == EventType.MouseDown)
                     {
                         GUI.changed = true;
+                        Highlighter.Stop();
                         folder.Selected = !folder.Selected;
 
                     }
                     else if (e.type == EventType.MouseUp)
                     {
                         GUI.changed = true;
+                        Highlighter.Stop();
                         return true;
+                    }
+                    else if (e.type == EventType.MouseDrag)
+                    {
+                        GUI.changed = true;
+                        Highlighter.Highlight("UnityMenuSimpler", folder.Name);
                     }
                 }
 
