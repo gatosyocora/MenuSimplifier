@@ -144,6 +144,18 @@ namespace Gatosyocora.UnityMenuSimpler
 
                 using (new EditorGUI.DisabledScope(!editorWindowInfoList.Any(x => x.HasChanged)))
                 {
+                    if (GUILayout.Button("Show Changed"))
+                    {
+                        foreach (var folder in folderList.OrderByDescending(x => x.EditorWindowList.Count))
+                        {
+                            if (folder.EditorWindowList.Any(x => x.HasChanged) || 
+                                folder.EditorWindowFolderList.Any(x => x.Foldout))
+                            {
+                                folder.Foldout = true;
+                            }
+                        }
+                    }
+
                     if (GUILayout.Button("Apply"))
                     {
                         ReplaceMenuItem(editorWindowInfoList);
