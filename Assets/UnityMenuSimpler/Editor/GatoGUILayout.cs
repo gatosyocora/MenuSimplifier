@@ -160,6 +160,8 @@ namespace Gatosyocora.UnityMenuSimpler
                     else if (e.type == EventType.MouseDrag)
                     {
                         GUI.changed = true;
+                        // TODO: 本当はFolder全体が囲まれるようにしたい
+                        // Highlighter.HighlightIdentifierはうまくいかない
                         Highlighter.Highlight("UnityMenuSimpler", folder.Name);
                     }
                 }
