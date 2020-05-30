@@ -254,7 +254,8 @@ namespace Gatosyocora.UnityMenuSimpler
             .Where(x => x.AttributeType == typeof(MenuItem) && !ContainExclusionFolder(x, exclusionFolderNames))
             .SelectMany(x => x.ConstructorArguments)
             .Where(x => x.Value is string)
-            .Select(x => x.Value.ToString());
+            .Select(x => x.Value.ToString())
+            .Distinct();
 
         /// <summary>
         /// Assetsフォルダ以下からMenuItemアトリビュートをもつスクリプトの一覧を取得する
