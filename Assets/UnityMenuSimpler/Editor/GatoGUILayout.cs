@@ -29,7 +29,7 @@ namespace Gatosyocora.UnityMenuSimpler
             return toggle;
         }
 
-        public static bool FolderField(EditorWindowFolder folder, Action AllIn, Action DeleteSelf, Action<EditorWindowFolder> DropSubFolder)
+        public static void FolderField(EditorWindowFolder folder, Action<EditorWindowFolder> OnDrop, Action AllIn, Action DeleteSelf, Action<EditorWindowFolder> DropSubFolder)
         {
             var defaultColor = GUI.backgroundColor;
             if (folder.Selected) GUI.backgroundColor = Color.gray;
@@ -81,7 +81,7 @@ namespace Gatosyocora.UnityMenuSimpler
                     {
                         foreach (var editorWindowfolder in folder.EditorWindowFolderList.ToArray())
                         {
-                            FolderField(editorWindowfolder, AllIn, DeleteSelf, DropSubFolder);
+                            FolderField(editorWindowfolder, OnDrop, AllIn, DeleteSelf, DropSubFolder);
                         }
 
                         foreach (var editorWindowInfo in folder.EditorWindowList.ToList())
@@ -155,7 +155,7 @@ namespace Gatosyocora.UnityMenuSimpler
                     {
                         GUI.changed = true;
                         Highlighter.Stop();
-                        return true;
+                        OnDrop(folder);
                     }
                     else if (e.type == EventType.MouseDrag)
                     {
@@ -167,8 +167,6 @@ namespace Gatosyocora.UnityMenuSimpler
                 }
 
             }
-
-            return false;
         }
 
         public static bool DropArea(string label, float height)

@@ -61,17 +61,18 @@ namespace Gatosyocora.UnityMenuSimpler
                     {
                         using (var check = new EditorGUI.ChangeCheckScope())
                         {
-                            if (GatoGUILayout.FolderField(folder,
+                            GatoGUILayout.FolderField(folder,
+                                (f) => {
+                                    // ファイルを移動させたときの処理
+                                    MoveFile(f, editorWindowInfoList.Where(x => x.Selected));
+
+                                    // フォルダを移動させたときの処理
+                                    MoveFolder(f, folderList.Where(x => x.Selected));
+                                },
                                 () => MoveFolder(folder, folderList.Where(x => x != folder && x.ParentFolder == null)),
                                 () => folderList.Remove(folder),
-                                (f) => DropSubFolder(f)))
-                            {
-                                // ファイルを移動させたときの処理
-                                MoveFile(folder, editorWindowInfoList.Where(x => x.Selected));
-
-                                // フォルダを移動させたときの処理
-                                MoveFolder(folder, folderList.Where(x => x.Selected));
-                            }
+                                (f) => DropSubFolder(f)
+                            );
 
                             if (check.changed)
                             {
