@@ -84,7 +84,9 @@ namespace Gatosyocora.UnityMenuSimpler
                     var e = Event.current;
                     if (e.type == EventType.MouseDrag)
                     {
-                        folderListScrollPos.x = Mathf.Clamp(e.mousePosition.x - position.x, 0, scope.rect.width);
+                        folderListScrollPos.x = Mathf.Clamp(
+                                                    (e.mousePosition.x - position.x-(scope.rect.width- position.width / 2))/2,
+                                                    0, position.width/2);
                         Repaint();
                     }
                 }
