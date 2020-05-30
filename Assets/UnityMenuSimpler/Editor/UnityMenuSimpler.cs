@@ -282,7 +282,7 @@ namespace Gatosyocora.UnityMenuSimpler
         /// </summary>
         /// <param name="editorWindowInfoList">MenuItemの情報のリスト</param>
         /// <returns></returns>
-        private List<EditorWindowFolder> CreateExistFolderList(List<EditorWindowInfo> editorWindowInfoList)
+        private List<EditorWindowFolder> CreateExistFolderList(IReadOnlyCollection<EditorWindowInfo> editorWindowInfoList)
         {
             var dict = new Dictionary<string, EditorWindowFolder>();
 
@@ -355,7 +355,7 @@ namespace Gatosyocora.UnityMenuSimpler
         /// </summary>
         /// <param name="editorWindowInfoList">フォルダのリスト</param>
         /// <param name="reset">パスを初期状態に戻すかどうか</param>
-        private void ReplaceMenuItem(List<EditorWindowInfo> editorWindowInfoList, bool reset = false)
+        private void ReplaceMenuItem(IReadOnlyCollection<EditorWindowInfo> editorWindowInfoList, bool reset = false)
         {
             foreach (var editorWindowInfo in editorWindowInfoList)
             {
