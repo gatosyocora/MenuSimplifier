@@ -243,7 +243,7 @@ namespace Gatosyocora.UnityMenuSimpler
 
                             return new EditorWindowInfo()
                             {
-                                Name = x.Name,
+                                Name = menuItemPath.Split('/').Last(),
                                 SourceMenuItemPath = menuItemPath,
                                 DestMenuItemPath = menuItemPath,
                                 FilePath = GetFilePath(x),
