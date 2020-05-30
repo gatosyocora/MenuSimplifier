@@ -454,8 +454,7 @@ namespace Gatosyocora.UnityMenuSimpler
                     selectedFolder.ParentFolder.EditorWindowFolderList.Remove(selectedFolder);
                 }
 
-                // ルートフォルダを移動させたとき
-                if (selectedFolder.ParentFolder == null)
+                if (needRemoveFromParentList)
                 {
                     folder.EditorWindowFolderList.Add(selectedFolder);
                     selectedFolder.ParentFolder = folder;
