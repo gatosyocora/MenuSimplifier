@@ -61,8 +61,8 @@ namespace Gatosyocora.UnityMenuSimpler
                     {
                         using (var check = new EditorGUI.ChangeCheckScope())
                         {
-                            if (GatoGUILayout.FolderField(folder, 
-                                () => MoveFolder(folder, folderList.Where(x => x != folder && x.ParentFolder == null)), 
+                            if (GatoGUILayout.FolderField(folder,
+                                () => MoveFolder(folder, folderList.Where(x => x != folder && x.ParentFolder == null)),
                                 () => folderList.Remove(folder),
                                 (f) => DropSubFolder(f)))
                             {
@@ -85,8 +85,8 @@ namespace Gatosyocora.UnityMenuSimpler
                     if (e.type == EventType.MouseDrag)
                     {
                         folderListScrollPos.x = Mathf.Clamp(
-                                                    (e.mousePosition.x - position.x-(scope.rect.width- position.width / 2))/2,
-                                                    0, position.width/2);
+                                                    (e.mousePosition.x - position.x - (scope.rect.width - position.width / 2)) / 2,
+                                                    0, position.width / 2);
                         Repaint();
                     }
                 }
@@ -349,7 +349,7 @@ namespace Gatosyocora.UnityMenuSimpler
                     if (!matchWithReplaced.Success) continue;
 
                     // 追加した行のみを削除する
-                    code = code.Replace(matchWithReplaced.Value, 
+                    code = code.Replace(matchWithReplaced.Value,
                             $"{matchWithReplaced.Groups["indent"]}{matchWithReplaced.Groups["line1"]}");
                 }
                 // 一度でも編集済みかどうか
