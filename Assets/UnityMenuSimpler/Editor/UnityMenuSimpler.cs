@@ -69,7 +69,7 @@ namespace Gatosyocora.UnityMenuSimpler
                     folderListScrollPos = scroll.scrollPosition;
                     folderRect = scope.rect;
 
-                    foreach (var folder in folderList.Where(x => x.ParentFolder == null).ToList())
+                    foreach (var folder in folderList.Where(x => x.ParentFolder is null).ToList())
                     {
                         using (var check = new EditorGUI.ChangeCheckScope())
                         {
@@ -81,7 +81,7 @@ namespace Gatosyocora.UnityMenuSimpler
                                     // フォルダを移動させたときの処理
                                     MoveFolder(f, folderList.Where(x => x.Selected));
                                 },
-                                () => MoveFolder(folder, folderList.Where(x => x != folder && x.ParentFolder == null)),
+                                () => MoveFolder(folder, folderList.Where(x => x != folder && x.ParentFolder is null)),
                                 () => folderList.Remove(folder),
                                 (f) => DropSubFolder(f)
                             );
@@ -125,7 +125,7 @@ namespace Gatosyocora.UnityMenuSimpler
                         {
                             selectedFolder.Selected = false;
 
-                            if (selectedFolder.ParentFolder == null) continue;
+                            if (selectedFolder.ParentFolder is null) continue;
 
                             DropSubFolder(selectedFolder);
                         }
@@ -260,16 +260,13 @@ namespace Gatosyocora.UnityMenuSimpler
                         .GetTypes()
                         .Where(x => ContainAttribute(x, typeof(MenuItem)))
                         .SelectMany(x => GetMenuItemPaths(x)
-                            .Select(path =>
+                            .Select(path => new EditorWindowInfo()
                             {
-                                return new EditorWindowInfo()
-                                {
-                                    Name = path.Split('/').Last(),
-                                    SourceMenuItemPath = path,
-                                    DestMenuItemPath = path,
-                                    FilePath = GetFilePath(x),
-                                    Selected = false
-                                };
+                                Name = path.Split('/').Last(),
+                                SourceMenuItemPath = path,
+                                DestMenuItemPath = path,
+                                FilePath = GetFilePath(x),
+                                Selected = false
                             })
                         )
                         .Where(x => !string.IsNullOrEmpty(x.SourceMenuItemPath))
@@ -478,7 +475,7 @@ namespace Gatosyocora.UnityMenuSimpler
         /// <param name="folder">抜けるフォルダ</param>
         private void DropSubFolder(EditorWindowFolder folder, bool needRemoveFromParent = true)
         {
-            if (folder.ParentFolder == null) return;
+            if (folder.ParentFolder is null) return;
 
             if (needRemoveFromParent)
             {

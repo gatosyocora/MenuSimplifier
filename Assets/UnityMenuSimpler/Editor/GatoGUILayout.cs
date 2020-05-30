@@ -42,7 +42,7 @@ namespace Gatosyocora.UnityMenuSimpler
             {
                 using (new EditorGUILayout.HorizontalScope())
                 {
-                    if (folder.ParentFolder == null)
+                    if (folder.ParentFolder is null)
                     {
                         if (folder.NameEdittable)
                         {
@@ -79,7 +79,7 @@ namespace Gatosyocora.UnityMenuSimpler
                 {
                     itemRect = itemsScope.rect;
 
-                    if (folder.Foldout || folder.ParentFolder == null)
+                    if (folder.Foldout || folder.ParentFolder is null)
                     {
                         foreach (var editorWindowfolder in folder.EditorWindowFolderList.ToArray())
                         {
@@ -114,8 +114,10 @@ namespace Gatosyocora.UnityMenuSimpler
                             {
                                 using (new EditorGUI.IndentLevelScope())
                                 {
-                                    var pathStyle = new GUIStyle(GUI.skin.label);
-                                    pathStyle.wordWrap = true;
+                                    var pathStyle = new GUIStyle(GUI.skin.label)
+                                    {
+                                        wordWrap = true
+                                    };
                                     EditorGUILayout.LabelField(editorWindowInfo.SourceMenuItemPath, pathStyle);
                                     EditorGUILayout.LabelField("→ " + editorWindowInfo.DestMenuItemPath, pathStyle);
                                 }
@@ -124,8 +126,7 @@ namespace Gatosyocora.UnityMenuSimpler
                     }
                 }
 
-                if (folder.EditorWindowFolderList.Count == 0 &&
-                    folder.EditorWindowList.Count == 0)
+                if (!folder.EditorWindowFolderList.Any() && !folder.EditorWindowList.Any())
                 {
                     using (new EditorGUI.DisabledScope(folder.NameEdittable))
                     {
@@ -143,7 +144,7 @@ namespace Gatosyocora.UnityMenuSimpler
 
                 GUI.backgroundColor = defaultColor;
 
-                if (folder.ParentFolder == null) GUILayout.FlexibleSpace();
+                if (folder.ParentFolder is null) GUILayout.FlexibleSpace();
 
                 if (scope.rect.Contains(e.mousePosition) && !itemRect.Contains(e.mousePosition))
                 {
