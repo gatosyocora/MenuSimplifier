@@ -363,7 +363,7 @@ namespace Gatosyocora.UnityMenuSimpler
 
                 var code = File.ReadAllText(editorWindowInfo.FilePath);
 
-                var resetPartten = @"(?<keyword>// UNITYMENUSIMPLER: )(?<original>\[MenuItem\(.*\)\](\r\n|\r|\n))(?<replaced>\s*\[MenuItem\(.*\)\].*(\r\n|\r|\n))";
+                var resetPartten = @"(?<keyword>// "+Regex.Escape(TOOL_KEYWORD)+@" )(?<original>\[MenuItem\(.*\)\](\r\n|\r|\n))(?<replaced>\s*\[MenuItem\(.*\)\].*(\r\n|\r|\n))";
                 var resetMatch = Regex.Match(code, resetPartten);
 
                 var overrideWritePattern = @"(?<prefix>// UNITYMENUSIMPLER: \[MenuItem\(.*\)\]\s+\[MenuItem\("")(?<replaced>.*)(?<suffix>"".*\)\])";
