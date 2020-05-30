@@ -29,7 +29,7 @@ namespace Gatosyocora.UnityMenuSimpler
         private Vector2 folderListScrollPos = Vector2.zero;
         private Rect folderRect;
 
-        private readonly static string T00L_KEYWORD = "UNITYMENUSIMPLER:";
+        private readonly static string TOOL_KEYWORD = "UNITYMENUSIMPLER:";
 
         [MenuItem("GatoTool/UnityMenuSimpler")]
         public static void Open()
