@@ -182,6 +182,13 @@ namespace Gatosyocora.UnityMenuSimpler
                     {
                         ReplaceMenuItem(editorWindowInfoList);
                     }
+
+                    EditorGUILayout.Space();
+
+                    if (GUILayout.Button("All Revert"))
+                    {
+                        RevertAllMenuItem();
+                    }
                 }
 
                 // マウスドラッグが終わったのですべて選択解除
@@ -508,6 +515,12 @@ namespace Gatosyocora.UnityMenuSimpler
             {
                 DropSubFolder(containFolder, false);
             }
+        }
+
+        private void RevertAllMenuItem()
+        {
+            editorWindowInfoList = LoadEditorWindowList();
+            folderList = CreateExistFolderList(editorWindowInfoList);
         }
     }
 }
