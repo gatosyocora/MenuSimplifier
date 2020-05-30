@@ -152,6 +152,19 @@ namespace Gatosyocora.UnityMenuSimpler
                 {
                     ReplaceMenuItem(editorWindowInfoList, true);
                 }
+
+                // マウスドラッグが終わったのですべて選択解除
+                if (Event.current.type == EventType.MouseUp)
+                {
+                    foreach (var folder in folderList)
+                    {
+                        folder.Selected = false;
+                    }
+                    foreach (var file in editorWindowInfoList)
+                    {
+                        file.Selected = false;
+                    }
+                }
             }
         }
 
