@@ -28,7 +28,7 @@ namespace Gatosyocora.UnityMenuSimpler.DataClass
         public bool Selected { get; set; }
 
         /// <summary>
-        ///　閉じられた状態であるか
+        ///　開かれた状態であるか
         /// </summary>
         public bool Foldout { get; set; }
 
