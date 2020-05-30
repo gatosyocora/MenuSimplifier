@@ -176,9 +176,18 @@ namespace Gatosyocora.UnityMenuSimpler
             var rect = EditorGUILayout.GetControlRect(true, height);
             GUI.Label(rect, label, GUI.skin.box);
             var e = Event.current;
-            if (rect.Contains(e.mousePosition) && e.type == EventType.MouseUp) 
+            if (rect.Contains(e.mousePosition)) 
             {
-                return true;
+                if (e.type == EventType.MouseDrag)
+                {
+                    GUI.changed = true;
+                    Highlighter.Highlight("UnityMenuSimpler", label);
+                }
+                else if (e.type == EventType.MouseUp)
+                {
+                    Highlighter.Stop();
+                    return true;
+                }
             }
             return false;
         }

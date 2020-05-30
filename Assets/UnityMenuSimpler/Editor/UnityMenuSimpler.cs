@@ -104,16 +104,21 @@ namespace Gatosyocora.UnityMenuSimpler
                     folderList.Add(newFolder);
                 }
 
-                if (GatoGUILayout.DropArea("Drop SubFolder", EditorGUIUtility.singleLineHeight * 4f))
+                using (var check = new EditorGUI.ChangeCheckScope())
                 {
-                    foreach (var selectedFolder in folderList.Where(x => x.Selected).ToArray())
+                    if (GatoGUILayout.DropArea("Drop SubFolder", EditorGUIUtility.singleLineHeight * 4f))
                     {
-                        selectedFolder.Selected = false;
+                        foreach (var selectedFolder in folderList.Where(x => x.Selected).ToArray())
+                        {
+                            selectedFolder.Selected = false;
 
-                        if (selectedFolder.ParentFolder == null) continue;
+                            if (selectedFolder.ParentFolder == null) continue;
 
-                        DropSubFolder(selectedFolder);
+                            DropSubFolder(selectedFolder);
+                        }
                     }
+
+                    if (check.changed) Repaint();
                 }
 
                 EditorGUILayout.Space();
