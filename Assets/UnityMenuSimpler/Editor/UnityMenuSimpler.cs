@@ -409,8 +409,8 @@ namespace Gatosyocora.UnityMenuSimpler
             var path = folder.Name;
             while (currentFolder.ParentFolder != null)
             {
-                path = folder.ParentFolder.Name + "/" + path;
-                currentFolder = folder.ParentFolder;
+                path = currentFolder.ParentFolder.Name + "/" + path;
+                currentFolder = currentFolder.ParentFolder;
             }
 
             return path;
@@ -439,27 +439,36 @@ namespace Gatosyocora.UnityMenuSimpler
         /// </summary>
         /// <param name="folder">移動先のフォルダ</param>
         /// <param name="selectedFolderList">移動させられるフォルダのリスト</param>
-        private void MoveFolder(EditorWindowFolder folder, IEnumerable<EditorWindowFolder> selectedFolderList)
+        private void MoveFolder(EditorWindowFolder folder, IEnumerable<EditorWindowFolder> selectedFolderList, bool needRemoveFromParentList = true)
         {
             foreach (var selectedFolder in selectedFolderList)
             {
                 if (selectedFolder == folder ||
                     folder.EditorWindowFolderList.Contains(selectedFolder)) continue;
 
-                if (selectedFolder.ParentFolder != null)
+                selectedFolder.Selected = false;
+
+                //サブフォルダを移動させたとき
+                if (selectedFolder.ParentFolder != null && needRemoveFromParentList)
                 {
                     selectedFolder.ParentFolder.EditorWindowFolderList.Remove(selectedFolder);
                 }
 
-                selectedFolder.Selected = false;
-                folder.EditorWindowFolderList.Add(selectedFolder);
-                selectedFolder.ParentFolder = folder;
+                // ルートフォルダを移動させたとき
+                if (selectedFolder.ParentFolder == null)
+                {
+                    folder.EditorWindowFolderList.Add(selectedFolder);
+                    selectedFolder.ParentFolder = folder;
+                }
 
                 // フォルダに属するファイルへの処理
                 foreach (var containItem in selectedFolder.EditorWindowList)
                 {
-                    containItem.DestMenuItemPath = folder.Name + "/" + containItem.DestMenuItemPath;
+                    containItem.DestMenuItemPath =  GetMenuItemFolderPath(selectedFolder) + "/" + containItem.Name;
                 }
+
+                // フォルダに属するフォルダへの処理
+                MoveFolder(folder, selectedFolder.EditorWindowFolderList, false);
             }
         }
 
@@ -467,19 +476,28 @@ namespace Gatosyocora.UnityMenuSimpler
         /// フォルダを親フォルダから抜けさせる
         /// </summary>
         /// <param name="folder">抜けるフォルダ</param>
-        private void DropSubFolder(EditorWindowFolder folder)
+        private void DropSubFolder(EditorWindowFolder folder, bool needRemoveFromParent = true)
         {
             if (folder.ParentFolder == null) return;
 
-            var parentFolder = folder.ParentFolder;
-            var parentFolderPath = GetMenuItemFolderPath(parentFolder);
-            parentFolder.EditorWindowFolderList.Remove(folder);
-            folder.ParentFolder = null;
+            if (needRemoveFromParent)
+            {
+                var parentFolder = folder.ParentFolder;
+                parentFolder.EditorWindowFolderList.Remove(folder);
+                folder.ParentFolder = null;
+            }
 
+            // 含まれるファイルへの処理
             var folderPath = GetMenuItemFolderPath(folder);
             foreach (var containItem in folder.EditorWindowList)
             {
-                containItem.DestMenuItemPath = folderPath + "/" + containItem.SourceMenuItemPath.Split('/').Last();
+                containItem.DestMenuItemPath = folderPath + "/" + containItem.Name;
+            }
+
+            // 含まれているサブフォルダへの処理
+            foreach (var containFolder in folder.EditorWindowFolderList)
+            {
+                DropSubFolder(containFolder, false);
             }
         }
     }
