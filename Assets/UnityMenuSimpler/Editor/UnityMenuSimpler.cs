@@ -122,29 +122,30 @@ namespace Gatosyocora.UnityMenuSimpler
                     if (check.changed) Repaint();
                 }
 
-                EditorGUILayout.Space();
+                // ファイルだけの移動はできなくてもよいので一時削除
+                //EditorGUILayout.Space();
 
-                EditorGUILayout.LabelField("Unallocated", EditorStyles.boldLabel);
+                //EditorGUILayout.LabelField("Unallocated", EditorStyles.boldLabel);
 
-                using (var scroll = new EditorGUILayout.ScrollViewScope(unallocatedListScrollPos))
-                {
-                    unallocatedListScrollPos = scroll.scrollPosition;
+                //using (var scroll = new EditorGUILayout.ScrollViewScope(unallocatedListScrollPos))
+                //{
+                //    unallocatedListScrollPos = scroll.scrollPosition;
 
-                    foreach (var editorWindowInfo in editorWindowInfoList)
-                    {
-                        if (!string.IsNullOrEmpty(editorWindowInfo.DestMenuItemPath)) continue;
+                //    foreach (var editorWindowInfo in editorWindowInfoList)
+                //    {
+                //        if (!string.IsNullOrEmpty(editorWindowInfo.DestMenuItemPath)) continue;
 
-                        using (var check = new EditorGUI.ChangeCheckScope())
-                        {
-                            editorWindowInfo.Selected = GatoGUILayout.ToggleLabelArea(
-                                                            editorWindowInfo.Name,
-                                                            editorWindowInfo.Selected,
-                                                            Color.white, Color.grey);
+                //        using (var check = new EditorGUI.ChangeCheckScope())
+                //        {
+                //            editorWindowInfo.Selected = GatoGUILayout.ToggleLabelArea(
+                //                                            editorWindowInfo.Name,
+                //                                            editorWindowInfo.Selected,
+                //                                            Color.white, Color.grey);
 
-                            if (check.changed) Repaint();
-                        }
-                    }
-                }
+                //            if (check.changed) Repaint();
+                //        }
+                //    }
+                //}
 
                 EditorGUILayout.Space();
 

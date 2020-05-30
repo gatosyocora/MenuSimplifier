@@ -100,11 +100,12 @@ namespace Gatosyocora.UnityMenuSimpler
                                 }
                                 EditorGUILayout.LabelField(editorWindowInfo.Name, style);
 
-                                if (GUILayout.Button("x"))
-                                {
-                                    folder.EditorWindowList.Remove(editorWindowInfo);
-                                    editorWindowInfo.DestMenuItemPath = string.Empty;
-                                }
+                                // ファイルだけの移動はできなくてもよいので一時削除
+                                //if (GUILayout.Button("x"))
+                                //{
+                                //    folder.EditorWindowList.Remove(editorWindowInfo);
+                                //    editorWindowInfo.DestMenuItemPath = string.Empty;
+                                //}
                             }
 
                             if (editorWindowInfo.HasChanged)
