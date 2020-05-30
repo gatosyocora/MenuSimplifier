@@ -146,6 +146,8 @@ namespace Gatosyocora.UnityMenuSimpler
                 {
                     if (GUILayout.Button("Show Changed"))
                     {
+                        // サブフォルダに変更後のものがあったかは開いているかで判断
+                        // 要素数が多いほどサブフォルダである可能性があるので要素数が多いものから開いていく
                         foreach (var folder in folderList.OrderByDescending(x => x.EditorWindowList.Count))
                         {
                             if (folder.EditorWindowList.Any(x => x.HasChanged) || 
