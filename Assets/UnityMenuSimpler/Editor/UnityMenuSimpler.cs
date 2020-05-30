@@ -445,7 +445,8 @@ namespace Gatosyocora.UnityMenuSimpler
             foreach (var selectedFolder in selectedFolderList)
             {
                 if (selectedFolder == folder ||
-                    folder.EditorWindowFolderList.Contains(selectedFolder)) continue;
+                    folder.EditorWindowFolderList.Contains(selectedFolder)||
+                    selectedFolder.EditorWindowFolderList.Contains(folder)) continue;
 
                 selectedFolder.Selected = false;
 
