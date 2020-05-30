@@ -49,6 +49,18 @@ namespace Gatosyocora.UnityMenuSimpler
             {
                 EditorGUILayout.Space();
 
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    GUILayout.FlexibleSpace();
+
+                    if (GUILayout.Button("All Reset to Default"))
+                    {
+                        ReplaceMenuItem(editorWindowInfoList, true);
+                    }
+                }
+
+                EditorGUILayout.Space();
+
                 using (var scroll = new EditorGUILayout.ScrollViewScope(folderListScrollPos,
                                             alwaysShowVertical: false,
                                             alwaysShowHorizontal: true))
@@ -170,11 +182,6 @@ namespace Gatosyocora.UnityMenuSimpler
                     {
                         ReplaceMenuItem(editorWindowInfoList);
                     }
-                }
-
-                if (GUILayout.Button("All Reset"))
-                {
-                    ReplaceMenuItem(editorWindowInfoList, true);
                 }
 
                 // マウスドラッグが終わったのですべて選択解除
