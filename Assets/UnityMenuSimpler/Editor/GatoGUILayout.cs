@@ -48,7 +48,9 @@ namespace Gatosyocora.UnityMenuSimpler
                         {
                             folder.Name = EditorGUILayout.TextField(folder.Name);
 
-                            if (e.Equals(Event.KeyboardEvent("return")) && !string.IsNullOrEmpty(folder.Name))
+                            if ((GUILayout.Button("OK", GUILayout.Width(50f)) ||
+                                e.Equals(Event.KeyboardEvent("return")))
+                                && !string.IsNullOrEmpty(folder.Name))
                             {
                                 folder.NameEdittable = false;
                                 GUI.changed = true;
