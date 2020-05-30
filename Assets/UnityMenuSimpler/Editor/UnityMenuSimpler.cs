@@ -17,13 +17,13 @@ namespace Gatosyocora.UnityMenuSimpler
     public class UnityMenuSimpler : EditorWindow
     {
         private List<EditorWindowInfo> editorWindowInfoList;
-        private string folderName = string.Empty;
         private List<EditorWindowFolder> folderList;
 
         /// <summary>
         /// MenuItemのフォルダの除外対象
         /// </summary>
-        private readonly static string[] exclusionFolderNames = new string[] { "GameObject", "CONTEXT", "Assets" };
+        private readonly static string[] exclusionFolderNames
+                        = new string[] { "GameObject", "CONTEXT", "Assets" };
 
         private Vector2 unallocatedListScrollPos = Vector2.zero;
         private Vector2 folderListScrollPos = Vector2.zero;
@@ -268,6 +268,7 @@ namespace Gatosyocora.UnityMenuSimpler
 
             foreach (var editorWindowInfo in editorWindowInfoList)
             {
+                // パスの最後のスラッシュ以降だけ削除
                 var folderName = Regex.Replace(editorWindowInfo.SourceMenuItemPath, "/[^/]+$", string.Empty);
 
                 if (!dict.TryGetValue(folderName, out EditorWindowFolder folder))
@@ -292,6 +293,7 @@ namespace Gatosyocora.UnityMenuSimpler
                 // ルートフォルダなので親フォルダを探さなくてよい
                 if (keyName.IndexOf('/') == -1) continue;
 
+                // パスの最後のスラッシュ以降だけ削除
                 var parentFolderName = Regex.Replace(keyName, "/[^/]+$", string.Empty);
 
                 // 親フォルダが見つかったのでフォルダ情報を変更する
