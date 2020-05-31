@@ -293,32 +293,36 @@ namespace Gatosyocora.UnityMenuSimpler
 
 
             var folderList = editorWindowInfoList
-                .Select(x => new
+                .SelectMany(x =>
                 {
-                    FolderName = Regex.Replace(x.Path, "/[^/]+$", string.Empty),
-                    EditorWindowInfo = x
+                    var deepFolderPath = Regex.Replace(x.Path, "/[^/]+$", string.Empty);
+                    var folderCount = deepFolderPath.Count(c => c == '/') + 1;
+                    var folders = deepFolderPath.Split('/');
+                    return Enumerable.Range(1, folderCount).Select(n => string.Join("/", folders.Take(n)));
                 })
-                .GroupBy(x => x.FolderName)
-                .Select(g =>
+                .Distinct()
+                .Select(x => new EditorWindowFolder
                 {
-                    var editorWindowFolder = new EditorWindowFolder()
-                    {
-                        Name = g.Key.Split('/').Last(),
-                        ParentFolder = null,
-                        NameEdittable = false,
-                        Path = g.Key
-                    };
-
-                    // ファイルに関する親子関係を設定
-                    editorWindowFolder.EditorWindowList.AddRange(g.Select(x => 
-                    {
-                        x.EditorWindowInfo.ParentFolder = editorWindowFolder;
-                        return x.EditorWindowInfo;
-                    }));
-
-                    return editorWindowFolder;
+                    Name = x.Split('/').Last(),
+                    ParentFolder = null,
+                    NameEdittable = false,
+                    Path = x
                 })
                 .ToList();
+
+            foreach (var editorWindowInfo in editorWindowInfoList)
+            {
+                var parentPath = Regex.Replace(editorWindowInfo.Path, "/[^/]+$", string.Empty);
+
+                // 親を取得
+                var parent = folderList.Single(x => x.Path == parentPath);
+
+                // 親に子を設定
+                parent.EditorWindowList.Add(editorWindowInfo);
+
+                // 子に親を設定
+                editorWindowInfo.ParentFolder = parent;
+            }
 
             // 兄弟でGroupBy
             var brotherGroups = folderList
