@@ -281,6 +281,17 @@ namespace Gatosyocora.UnityMenuSimpler
         /// <returns></returns>
         private List<EditorWindowFolder> CreateExistFolderList(IReadOnlyCollection<EditorWindowInfo> editorWindowInfoList)
         {
+            /*
+             * editorWindowInfoListのに含まれる要素のPathの例
+             * A/B/a
+             * C/D/b
+             * A/c
+             * A/B/d
+             * A/E/e
+             * T/F/f
+             */
+
+
             var folderList = editorWindowInfoList
                 .Select(x => new
                 {
