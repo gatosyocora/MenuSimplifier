@@ -27,5 +27,18 @@ namespace Gatosyocora.UnityMenuSimpler.DataClass
         /// 名前を変更可能か
         /// </summary>
         public bool NameEdittable { get; set; }
+
+        /// <summary>
+        /// フォルダを開いた状態にする
+        /// </summary>
+        public void ShowChildren()
+        {
+            var folder = this;
+            while (folder != null)
+            {
+                folder.Foldout = true;
+                folder = folder.ParentFolder;
+            }
+        }
     }
 }

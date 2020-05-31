@@ -168,7 +168,7 @@ namespace Gatosyocora.UnityMenuSimpler
                     {
                         foreach (var file in editorWindowInfoList.Where(x => x.HasChanged))
                         {
-                            OpenFolder(file.ParentFolder);
+                            file.ParentFolder.ShowChildren();
                         }
                     }
 
@@ -487,19 +487,6 @@ namespace Gatosyocora.UnityMenuSimpler
         {
             editorWindowInfoList = LoadEditorWindowList();
             folderList = CreateExistFolderList(editorWindowInfoList);
-        }
-
-        /// <summary>
-        /// フォルダを開いた状態にする
-        /// </summary>
-        /// <param name="folder"></param>
-        private void OpenFolder(EditorWindowFolder folder)
-        {
-            folder.Foldout = true;
-            if (folder.ParentFolder != null)
-            {
-                OpenFolder(folder.ParentFolder);
-            }
         }
     }
 }
