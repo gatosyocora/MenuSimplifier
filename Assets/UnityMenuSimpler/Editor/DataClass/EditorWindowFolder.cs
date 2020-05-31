@@ -41,5 +41,10 @@ namespace Gatosyocora.UnityMenuSimpler.DataClass
         /// 親フォルダ
         /// </summary>
         public EditorWindowFolder ParentFolder { get; set; }
+
+        /// <summary>
+        /// MenuItemの絶対パス
+        /// </summary>
+        public string Path { get; set; }
     }
 }

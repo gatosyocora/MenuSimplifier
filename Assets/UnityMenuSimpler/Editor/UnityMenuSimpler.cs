@@ -279,50 +279,61 @@ namespace Gatosyocora.UnityMenuSimpler
         /// </summary>
         /// <param name="editorWindowInfoList">MenuItemの情報のリスト</param>
         /// <returns></returns>
-        private List<EditorWindowFolder> CreateExistFolderList(IReadOnlyCollection<EditorWindowInfo> editorWindowInfoList)
+        private List<EditorWindowFolder> CreateExistFolderList(IList<EditorWindowInfo> editorWindowInfoList)
         {
-            var dict = new Dictionary<string, EditorWindowFolder>();
-
-            foreach (var editorWindowInfo in editorWindowInfoList)
-            {
-                // パスの最後のスラッシュ以降だけ削除
-                var folderName = Regex.Replace(editorWindowInfo.SourceMenuItemPath, "/[^/]+$", string.Empty);
-
-                if (!dict.TryGetValue(folderName, out EditorWindowFolder folder))
+            var folderList = editorWindowInfoList
+                .Select(x => new
                 {
-                    folder = new EditorWindowFolder()
+                    FolderName = Regex.Replace(x.SourceMenuItemPath, "/[^/]+$", string.Empty),
+                    EditorWindowInfo = x
+                })
+                .GroupBy(x => x.FolderName)
+                .Select(g =>
+                {
+                    var editorWindowFolder = new EditorWindowFolder()
                     {
-                        Name = folderName,
+                        Name = g.Key.Split('/').Last(),
                         ParentFolder = null,
-                        NameEdittable = false
+                        NameEdittable = false,
+                        Path = g.Key
                     };
-                    dict.Add(folderName, folder);
-                }
 
-                folder.EditorWindowList.Add(editorWindowInfo);
-            }
+                    // ファイルに関する親子関係を設定
+                    editorWindowFolder.EditorWindowList.AddRange(g.Select(x => 
+                    {
+                        x.EditorWindowInfo.ParentFolder = editorWindowFolder;
+                        return x.EditorWindowInfo;
+                    }));
 
-            // パスが深いところから処理していく
-            var orderedKeys = dict.Keys.OrderByDescending(x => x);
+                    return editorWindowFolder;
+                })
+                .ToList();
 
-            foreach (var keyName in orderedKeys)
+            // 以降フォルダの親子関係を設定していく
+            var folderGroup = folderList.GroupBy(x => x.Path.Count(c => c == '/'));
+            var keys = folderGroup.Select(x => x.Key).Distinct().OrderBy(x => x).ToArray();
+
+            foreach (var key in keys.Take(keys.Length-1))
             {
-                // ルートフォルダなので親フォルダを探さなくてよい
-                if (keyName.IndexOf('/') == -1) continue;
+                folderGroup
+                    .Where(x => x.Key == key) //　改装keyのフォルダを集めた
+                    .Select(group =>
+                    {
+                        var folders = group.Select(folder => folder);
+                        var childFolders = folderGroup.Where(g => g.Key == key + 1).SelectMany(x => x);
 
-                // パスの最後のスラッシュ以降だけ削除
-                var parentFolderName = Regex.Replace(keyName, "/[^/]+$", string.Empty);
-
-                // 親フォルダが見つかったのでフォルダ情報を変更する
-                if (dict.TryGetValue(parentFolderName, out EditorWindowFolder parentFolder))
-                {
-                    dict[keyName].Name = keyName.Split('/').Last();
-                    dict[keyName].ParentFolder = parentFolder;
-                    parentFolder.EditorWindowFolderList.Add(dict[keyName]);
-                }
+                        return folders.Select(f =>
+                        {
+                            f.EditorWindowFolderList.AddRange(
+                                childFolders
+                                    .Where(x => x.Path.Split('/').First() == f.Name)
+                                    .Select(child => child.ParentFolder = f));
+                            return f;
+                        });
+                    }).ToList();
             }
 
-            return dict.Values.ToList();
+            return folderList;
         }
 
         /// <summary>
@@ -352,7 +363,7 @@ namespace Gatosyocora.UnityMenuSimpler
         /// </summary>
         /// <param name="editorWindowInfoList">フォルダのリスト</param>
         /// <param name="reset">パスを初期状態に戻すかどうか</param>
-        private void ReplaceMenuItem(IReadOnlyCollection<EditorWindowInfo> editorWindowInfoList, bool reset = false)
+        private void ReplaceMenuItem(IList<EditorWindowInfo> editorWindowInfoList, bool reset = false)
         {
             foreach (var editorWindowInfo in editorWindowInfoList)
             {
