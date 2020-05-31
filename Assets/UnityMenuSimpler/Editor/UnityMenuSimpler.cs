@@ -311,7 +311,6 @@ namespace Gatosyocora.UnityMenuSimpler
 
             // 兄弟でGroupBy
             var brotherGroups = folderList
-                .OrderBy(x => x.Path)
                 .GroupBy(x =>
                 {
                     var folders = x.Path.Split('/');
