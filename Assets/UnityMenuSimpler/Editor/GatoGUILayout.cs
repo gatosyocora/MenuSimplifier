@@ -118,7 +118,7 @@ namespace Gatosyocora.UnityMenuSimpler
                                     {
                                         wordWrap = true
                                     };
-                                    EditorGUILayout.LabelField(editorWindowInfo.SourceMenuItemPath, pathStyle);
+                                    EditorGUILayout.LabelField(editorWindowInfo.Path, pathStyle);
                                     EditorGUILayout.LabelField("→ " + editorWindowInfo.DestMenuItemPath, pathStyle);
                                 }
                             }

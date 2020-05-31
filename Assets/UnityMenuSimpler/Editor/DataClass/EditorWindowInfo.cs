@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Gatosyocora.UnityMenuSimpler.Interfaces;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Gatosyocora.UnityMenuSimpler.DataClass
@@ -6,7 +7,7 @@ namespace Gatosyocora.UnityMenuSimpler.DataClass
     /// <summary>
     /// EditorWindowスクリプトに関する情報のクラス
     /// </summary>
-    public class EditorWindowInfo
+    public class EditorWindowInfo : IEditorWindowItem
     {
         /// <summary>
         /// 表示用の名称
@@ -16,7 +17,7 @@ namespace Gatosyocora.UnityMenuSimpler.DataClass
         /// <summary>
         /// 変更前のMenuItemのパス
         /// </summary>
-        public string SourceMenuItemPath { get; set; }
+        public string Path { get; set; }
 
         /// <summary>
         /// 変更後のMenuItemのパス
@@ -28,10 +29,6 @@ namespace Gatosyocora.UnityMenuSimpler.DataClass
         /// </summary>
         public string FilePath { get; set; }
 
-        /// <summary>
-        /// 属しているフォルダ
-        /// </summary>
-        public EditorWindowFolder ParentFolder { get; set; }
 
         /// <summary>
         /// 選択状態であるか
@@ -46,8 +43,13 @@ namespace Gatosyocora.UnityMenuSimpler.DataClass
             get
             {
                 return !string.IsNullOrEmpty(DestMenuItemPath) &&
-                         SourceMenuItemPath != DestMenuItemPath;
+                         Path != DestMenuItemPath;
             }
         }
+
+        /// <summary>
+        /// 親フォルダ
+        /// </summary>
+        public EditorWindowFolder ParentFolder { get; set; }
     }
 }

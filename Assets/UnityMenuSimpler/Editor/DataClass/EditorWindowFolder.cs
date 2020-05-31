@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using Gatosyocora.UnityMenuSimpler.Interfaces;
+using System.Collections.Generic;
 
 namespace Gatosyocora.UnityMenuSimpler.DataClass
 {
     /// <summary>
     /// EditorWindowスクリプトに関する情報を複数まとめるクラス
     /// </summary>
-    public class EditorWindowFolder
+    public class EditorWindowFolder : IEditorWindowItem
     {
         /// <summary>
         /// 表示用の名称
@@ -46,5 +47,10 @@ namespace Gatosyocora.UnityMenuSimpler.DataClass
         /// MenuItemの絶対パス
         /// </summary>
         public string Path { get; set; }
+        
+        public override string ToString()
+        {
+            return Path;
+        }
     }
 }

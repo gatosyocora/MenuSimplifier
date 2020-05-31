@@ -7,6 +7,7 @@ using System;
 using System.IO;
 using System.Text.RegularExpressions;
 using Gatosyocora.UnityMenuSimpler.DataClass;
+using Gatosyocora.UnityMenuSimpler.Interfaces;
 
 // UnityMenuSimpler v1.0
 // Copyright (c) 2020 gatosyocora
@@ -263,14 +264,14 @@ namespace Gatosyocora.UnityMenuSimpler
                             .Select(path => new EditorWindowInfo()
                             {
                                 Name = path.Split('/').Last(),
-                                SourceMenuItemPath = path,
+                                Path = path,
                                 DestMenuItemPath = path,
                                 FilePath = GetFilePath(x),
                                 Selected = false
                             })
                         )
-                        .Where(x => !string.IsNullOrEmpty(x.SourceMenuItemPath))
-                        .OrderByDescending(x => x.SourceMenuItemPath)
+                        .Where(x => !string.IsNullOrEmpty(x.Path))
+                        .OrderByDescending(x => x.Path)
                         .ToList();
         }
 
@@ -284,7 +285,7 @@ namespace Gatosyocora.UnityMenuSimpler
             var folderList = editorWindowInfoList
                 .Select(x => new
                 {
-                    FolderName = Regex.Replace(x.SourceMenuItemPath, "/[^/]+$", string.Empty),
+                    FolderName = Regex.Replace(x.Path, "/[^/]+$", string.Empty),
                     EditorWindowInfo = x
                 })
                 .GroupBy(x => x.FolderName)
@@ -413,18 +414,17 @@ namespace Gatosyocora.UnityMenuSimpler
         }
 
         /// <summary>
-        /// MenuItemのフォルダのパスを取得する
+        /// MenuItemのフォルダまたはファイルのパスを取得する
         /// </summary>
-        /// <param name="folder">パスを取得するフォルダ</param>
+        /// <param name="item">パスを取得するフォルダまたはファイル</param>
         /// <returns></returns>
-        private string GetMenuItemFolderPath(EditorWindowFolder folder)
+        private string GetMenuItemPath(IEditorWindowItem item)
         {
-            var currentFolder = folder;
-            var path = folder.Name;
-            while (currentFolder.ParentFolder != null)
+            var path = item.Name;
+            while (item.ParentFolder != null)
             {
-                path = currentFolder.ParentFolder.Name + "/" + path;
-                currentFolder = currentFolder.ParentFolder;
+                path = item.ParentFolder.Name + "/" + path;
+                item = item.ParentFolder;
             }
 
             return path;
@@ -442,7 +442,7 @@ namespace Gatosyocora.UnityMenuSimpler
                 if (folder.EditorWindowList.Contains(selectedItem)) continue;
 
                 selectedItem.Selected = false;
-                var filePath = selectedItem.SourceMenuItemPath.Split('/').Last();
+                var filePath = selectedItem.Path.Split('/').Last();
                 selectedItem.DestMenuItemPath = folder.Name + "/" + filePath;
                 folder.EditorWindowList.Add(selectedItem);
             }
@@ -478,7 +478,7 @@ namespace Gatosyocora.UnityMenuSimpler
                 // フォルダに属するファイルへの処理
                 foreach (var containItem in selectedFolder.EditorWindowList)
                 {
-                    containItem.DestMenuItemPath =  GetMenuItemFolderPath(selectedFolder) + "/" + containItem.Name;
+                    containItem.DestMenuItemPath =  GetMenuItemPath(selectedFolder) + "/" + containItem.Name;
                 }
 
                 // フォルダに属するフォルダへの処理
@@ -502,7 +502,7 @@ namespace Gatosyocora.UnityMenuSimpler
             }
 
             // 含まれるファイルへの処理
-            var folderPath = GetMenuItemFolderPath(folder);
+            var folderPath = GetMenuItemPath(folder);
             foreach (var containItem in folder.EditorWindowList)
             {
                 containItem.DestMenuItemPath = folderPath + "/" + containItem.Name;
