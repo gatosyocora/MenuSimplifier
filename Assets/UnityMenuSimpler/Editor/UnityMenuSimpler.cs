@@ -265,7 +265,6 @@ namespace Gatosyocora.UnityMenuSimpler
                             {
                                 Name = path.Split('/').Last(),
                                 Path = path,
-                                DestMenuItemPath = path,
                                 FilePath = GetFilePath(x),
                                 Selected = false
                             })
@@ -414,23 +413,6 @@ namespace Gatosyocora.UnityMenuSimpler
         }
 
         /// <summary>
-        /// MenuItemのフォルダまたはファイルのパスを取得する
-        /// </summary>
-        /// <param name="item">パスを取得するフォルダまたはファイル</param>
-        /// <returns></returns>
-        private string GetMenuItemPath(IEditorWindowItem item)
-        {
-            var path = item.Name;
-            while (item.ParentFolder != null)
-            {
-                path = item.ParentFolder.Name + "/" + path;
-                item = item.ParentFolder;
-            }
-
-            return path;
-        }
-
-        /// <summary>
         /// 複数のMenuItemの情報（ファイル）をフォルダに移動させる
         /// </summary>
         /// <param name="folder"></param>
@@ -443,7 +425,6 @@ namespace Gatosyocora.UnityMenuSimpler
 
                 selectedItem.Selected = false;
                 var filePath = selectedItem.Path.Split('/').Last();
-                selectedItem.DestMenuItemPath = folder.Name + "/" + filePath;
                 folder.EditorWindowList.Add(selectedItem);
             }
         }
@@ -475,12 +456,6 @@ namespace Gatosyocora.UnityMenuSimpler
                     selectedFolder.ParentFolder = folder;
                 }
 
-                // フォルダに属するファイルへの処理
-                foreach (var containItem in selectedFolder.EditorWindowList)
-                {
-                    containItem.DestMenuItemPath =  GetMenuItemPath(selectedFolder) + "/" + containItem.Name;
-                }
-
                 // フォルダに属するフォルダへの処理
                 MoveFolder(folder, selectedFolder.EditorWindowFolderList, false);
             }
@@ -499,13 +474,6 @@ namespace Gatosyocora.UnityMenuSimpler
                 var parentFolder = folder.ParentFolder;
                 parentFolder.EditorWindowFolderList.Remove(folder);
                 folder.ParentFolder = null;
-            }
-
-            // 含まれるファイルへの処理
-            var folderPath = GetMenuItemPath(folder);
-            foreach (var containItem in folder.EditorWindowList)
-            {
-                containItem.DestMenuItemPath = folderPath + "/" + containItem.Name;
             }
 
             // 含まれているサブフォルダへの処理

@@ -21,5 +21,11 @@ namespace Gatosyocora.UnityMenuSimpler.Interfaces
         /// 属しているフォルダ
         /// </summary>
         EditorWindowFolder ParentFolder { get; set; }
+
+        /// <summary>
+        /// 絶対パスを取得する
+        /// </summary>
+        /// <returns></returns>
+        string GetMenuItemPath();
     }
 }
