@@ -29,7 +29,7 @@ namespace Gatosyocora.UnityMenuSimpler
             return toggle;
         }
 
-        public static void FolderField(EditorWindowFolder folder, Action<EditorWindowFolder> OnDrop, Action AllIn, Action DeleteSelf, Action<EditorWindowFolder> DropSubFolder)
+        public static void FolderField(EditorWindowFolder folder, Action<EditorWindowFolder> OnDrop, Action AllIn, Action RemoveSelf, Action<EditorWindowFolder> DropSubFolder)
         {
             var defaultColor = GUI.backgroundColor;
             if (folder.Selected) GUI.backgroundColor = Color.gray;
@@ -83,7 +83,7 @@ namespace Gatosyocora.UnityMenuSimpler
                     {
                         foreach (var editorWindowfolder in folder.EditorWindowFolderList.ToArray())
                         {
-                            FolderField(editorWindowfolder, OnDrop, AllIn, DeleteSelf, DropSubFolder);
+                            FolderField(editorWindowfolder, OnDrop, AllIn, RemoveSelf, DropSubFolder);
                         }
 
                         foreach (var editorWindowInfo in folder.EditorWindowList.ToList())
@@ -136,9 +136,9 @@ namespace Gatosyocora.UnityMenuSimpler
                         }
                     }
 
-                    if (GUILayout.Button("Delete"))
+                    if (GUILayout.Button("Remove"))
                     {
-                        DeleteSelf();
+                        RemoveSelf();
                     }
                 }
 
