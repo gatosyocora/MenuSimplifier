@@ -383,7 +383,8 @@ namespace Gatosyocora.UnityMenuSimpler
         {
             foreach (var editorWindowInfo in editorWindowInfoList)
             {
-                if (!editorWindowInfo.HasChanged && !reset) continue;
+                if (!editorWindowInfo.HasChanged && !reset &&
+                string.IsNullOrEmpty(editorWindowInfo.FilePath)) continue;
 
                 var code = File.ReadAllText(editorWindowInfo.FilePath);
 
