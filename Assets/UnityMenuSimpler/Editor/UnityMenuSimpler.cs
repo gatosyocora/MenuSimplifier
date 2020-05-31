@@ -207,23 +207,18 @@ namespace Gatosyocora.UnityMenuSimpler
         /// <returns>ファイルパス</returns>
         private string GetFilePath(Type type)
         {
-            var assetGuid = AssetDatabase.FindAssets(type.Name + " t:Script").FirstOrDefault();
-            if (string.IsNullOrEmpty(assetGuid))
+            var filePaths = AssetDatabase.FindAssets(type.Name + " t:Script")
+                .Select(guid => AssetDatabase.GUIDToAssetPath(guid))
+                .Where(x => Path.GetFileNameWithoutExtension(x) == type.Name)
+                .ToArray();
+
+            if (filePaths.Count() == 0 || filePaths.Count() >= 2)
             {
-                Debug.LogError(type.Name + " : Not Found Asset");
+                Debug.LogErrorFormat("{0}のファイルが正しく取得できませんでした", type);
                 return string.Empty;
             }
 
-            var path = AssetDatabase.GUIDToAssetPath(assetGuid);
-
-            if (!File.Exists(path))
-            {
-                Debug.LogError(type.Name + " : Not Found File");
-                Debug.LogError(path);
-                return string.Empty;
-            }
-
-            return path;
+            return filePaths.Single();
         }
 
         /// <summary>
