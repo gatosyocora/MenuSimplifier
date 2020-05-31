@@ -309,28 +309,35 @@ namespace Gatosyocora.UnityMenuSimpler
                 })
                 .ToList();
 
-            // 以降フォルダの親子関係を設定していく
-            var folderGroup = folderList.GroupBy(x => x.Path.Count(c => c == '/'));
-            var keys = folderGroup.Select(x => x.Key).Distinct().OrderBy(x => x).ToArray();
+            // 兄弟でGroupBy
+            var brotherGroups = folderList
+                .OrderBy(x => x.Path)
+                .GroupBy(x =>
+                {
+                    var folders = x.Path.Split('/');
+                    return string.Join("/", folders.Take(folders.Length - 1));
+                })
+                .ToList();
 
-            foreach (var key in keys.Take(keys.Length-1))
+            // 兄弟グループでループ
+            foreach (var brotherGroup in brotherGroups)
             {
-                folderGroup
-                    .Where(x => x.Key == key) //　改装keyのフォルダを集めた
-                    .Select(group =>
-                    {
-                        var folders = group.Select(folder => folder);
-                        var childFolders = folderGroup.Where(g => g.Key == key + 1).SelectMany(x => x);
+                // 親を取得
+                var parent = folderList.FirstOrDefault(x => x.Path == brotherGroup.Key);
 
-                        return folders.Select(f =>
-                        {
-                            f.EditorWindowFolderList.AddRange(
-                                childFolders
-                                    .Where(x => x.Path.Split('/').First() == f.Name)
-                                    .Select(child => child.ParentFolder = f));
-                            return f;
-                        });
-                    }).ToList();
+                if (parent is null)
+                {
+                    continue;
+                }
+
+                // 親に子を設定
+                parent.EditorWindowFolderList.AddRange(brotherGroup);
+
+                // 子に親を設定
+                foreach (var child in brotherGroup)
+                {
+                    child.ParentFolder = parent;
+                }
             }
 
             return folderList;
