@@ -204,21 +204,47 @@ namespace Gatosyocora.UnityMenuSimpler
         /// </summary>
         /// <param name="type">クラスの型</param>
         /// <returns>ファイルパス</returns>
-        private string GetFilePath(Type type)
+        private string GetFilePath(Type type, string menuItemPath)
         {
             var filePaths = AssetDatabase.FindAssets(type.Name + " t:Script")
                 .Select(guid => AssetDatabase.GUIDToAssetPath(guid))
-                .Where(x => Path.GetFileNameWithoutExtension(x) == type.Name)
+                .Where(path => Regex.IsMatch(File.ReadAllText(path), @"\[MenuItem\(""" + Regex.Escape(menuItemPath)))
                 .ToArray();
 
             if (filePaths.Count() == 0 || filePaths.Count() >= 2)
             {
-                Debug.LogErrorFormat("{0}のファイルが正しく取得できませんでした", type);
+                Debug.LogErrorFormat("{0}のファイルが正しく取得できませんでした", menuItemPath);
                 return string.Empty;
             }
 
             return filePaths.Single();
         }
+
+        // 低速確実版
+        //private string GetFilePath(string menuItemPath, string[] editorCsFilePaths)
+        //{
+        //    var filePaths = editorCsFilePaths
+        //        .Where(path => Regex.IsMatch(File.ReadAllText(path), @"\[MenuItem\("""+Regex.Escape(menuItemPath)))
+        //        .ToArray();
+
+        //    if (filePaths.Count() == 0 || filePaths.Count() >= 2)
+        //    {
+        //        Debug.LogErrorFormat("{0}のファイルが正しく取得できませんでした", menuItemPath);
+        //        return string.Empty;
+        //    }
+
+        //    return filePaths.Single();
+        //}
+
+        //private string[] GetEditorCsFilePaths()
+        //{
+        //    return AssetDatabase.FindAssets("Editor t:folder")
+        //        .Select(guid => AssetDatabase.GUIDToAssetPath(guid))
+        //        .SelectMany(folderPath => Directory.GetFiles(folderPath, "*.cs", SearchOption.AllDirectories))
+        //        .Select(path => path.Replace('\\', '/'))
+        //        .Distinct()
+        //        .ToArray();
+        //}
 
         /// <summary>
         /// 特定の型のクラスが特定のアトリビュートを持つメソッドを含んでいるか判定する
@@ -251,6 +277,8 @@ namespace Gatosyocora.UnityMenuSimpler
         /// <returns>MenuItemアトリビュートをもつスクリプトのリスト</returns>
         private List<EditorWindowInfo> LoadEditorWindowList()
         {
+            //var editorCsFilePaths = GetEditorCsFilePaths();
+
             return Assembly.GetExecutingAssembly()
                         .GetTypes()
                         .Where(x => ContainAttribute(x, typeof(MenuItem)))
@@ -259,7 +287,8 @@ namespace Gatosyocora.UnityMenuSimpler
                             {
                                 Name = path.Split('/').Last(),
                                 Path = path,
-                                FilePath = GetFilePath(x)
+                                FilePath = GetFilePath(x, path)
+                                //FilePath = GetFilePath(path, editorCsFilePaths)
                             })
                         )
                         .Where(x => !string.IsNullOrEmpty(x.Path))
