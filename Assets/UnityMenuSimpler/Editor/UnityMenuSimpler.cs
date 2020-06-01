@@ -458,16 +458,12 @@ namespace Gatosyocora.UnityMenuSimpler
         /// フォルダを親フォルダから抜けさせる
         /// </summary>
         /// <param name="folder">抜けるフォルダ</param>
-        private void DropSubFolder(EditorWindowFolder folder, bool needRemoveFromParent = true)
+        private void DropSubFolder(EditorWindowFolder folder)
         {
             if (folder.ParentFolder is null) return;
 
-            if (needRemoveFromParent)
-            {
-                var parentFolder = folder.ParentFolder;
-                parentFolder.EditorWindowFolderList.Remove(folder);
-                folder.ParentFolder = null;
-            }
+            folder.ParentFolder.EditorWindowFolderList.Remove(folder);
+            folder.ParentFolder = null;
         }
 
         private void RevertAllMenuItem()
