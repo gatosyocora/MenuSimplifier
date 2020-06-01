@@ -29,7 +29,7 @@ namespace Gatosyocora.UnityMenuSimpler
             return toggle;
         }
 
-        public static void FolderField(EditorWindowFolder folder, Action<EditorWindowFolder> OnDrop, Action AllIn, Action RemoveSelf, Action<EditorWindowFolder> DropSubFolder, Action<EditorWindowFolder> OnSelect)
+        public static void FolderField(EditorWindowFolder folder, LanguageTemplate lang, Action<EditorWindowFolder> OnDrop, Action AllIn, Action RemoveSelf, Action<EditorWindowFolder> DropSubFolder, Action<EditorWindowFolder> OnSelect)
         {
             var defaultColor = GUI.backgroundColor;
             if (folder.Selected) GUI.backgroundColor = Color.gray;
@@ -48,7 +48,7 @@ namespace Gatosyocora.UnityMenuSimpler
                         {
                             folder.Name = EditorGUILayout.TextField(folder.Name);
 
-                            if ((GUILayout.Button("OK", GUILayout.Width(50f)) ||
+                            if ((GUILayout.Button(lang.ok, GUILayout.Width(50f)) ||
                                 e.Equals(Event.KeyboardEvent("return")))
                                 && !string.IsNullOrEmpty(folder.Name))
                             {
@@ -65,7 +65,7 @@ namespace Gatosyocora.UnityMenuSimpler
                     {
                         folder.Foldout = EditorGUILayout.Foldout(folder.Foldout, folder.Name);
 
-                        if (GUILayout.Button("Drop"))
+                        if (GUILayout.Button(lang.drop))
                         {
                             DropSubFolder(folder);
                         }
@@ -80,12 +80,12 @@ namespace Gatosyocora.UnityMenuSimpler
                     {
                         foreach (var editorWindowfolder in folder.EditorWindowFolderList.ToArray())
                         {
-                            FolderField(editorWindowfolder, OnDrop, AllIn, RemoveSelf, DropSubFolder, OnSelect);
+                            FolderField(editorWindowfolder, lang, OnDrop, AllIn, RemoveSelf, DropSubFolder, OnSelect);
                         }
 
                         foreach (var editorWindowInfo in folder.EditorWindowList.ToList())
                         {
-                            FileField(editorWindowInfo);
+                            FileField(editorWindowInfo, lang);
                         }
                     }
                 }
@@ -94,13 +94,13 @@ namespace Gatosyocora.UnityMenuSimpler
                 {
                     using (new EditorGUI.DisabledScope(folder.NameEdittable))
                     {
-                        if (GUILayout.Button("All In"))
+                        if (GUILayout.Button(lang.allIn))
                         {
                             AllIn();
                         }
                     }
 
-                    if (GUILayout.Button("Remove"))
+                    if (GUILayout.Button(lang.remove))
                     {
                         RemoveSelf();
                     }
@@ -137,7 +137,7 @@ namespace Gatosyocora.UnityMenuSimpler
             }
         }
 
-        public static bool DropArea(string label, float height)
+        public static bool DropArea(string label, LanguageTemplate lang, float height)
         {
             var rect = EditorGUILayout.GetControlRect(true, height);
             GUI.Label(rect, label, GUI.skin.box);
@@ -159,7 +159,7 @@ namespace Gatosyocora.UnityMenuSimpler
             return false;
         }
 
-        public static void FolderRowField(EditorWindowFolder folder, Action<EditorWindowFolder> DropSubFolder, Action AllIn, Action DeleteSelf)
+        public static void FolderRowField(EditorWindowFolder folder, LanguageTemplate lang, Action<EditorWindowFolder> DropSubFolder, Action AllIn, Action RemoveSelf)
         {
             var e = Event.current;
 
@@ -171,7 +171,7 @@ namespace Gatosyocora.UnityMenuSimpler
                     {
                         folder.Name = EditorGUILayout.TextField(folder.Name);
 
-                        if ((GUILayout.Button("OK", GUILayout.Width(50f)) ||
+                        if ((GUILayout.Button(lang.ok, GUILayout.Width(50f)) ||
                             e.Equals(Event.KeyboardEvent("return")))
                             && !string.IsNullOrEmpty(folder.Name))
                         {
@@ -188,21 +188,21 @@ namespace Gatosyocora.UnityMenuSimpler
                     {
                         using (new EditorGUI.DisabledScope(folder.NameEdittable))
                         {
-                            if (GUILayout.Button("AllIn"))
+                            if (GUILayout.Button(lang.allIn))
                             {
                                 AllIn();
                             }
                         }
 
-                        if (GUILayout.Button("Delete"))
+                        if (GUILayout.Button(lang.remove))
                         {
-                            DeleteSelf();
+                            RemoveSelf();
                         }
                     }
 
                     if (!(folder.ParentFolder is null))
                     {
-                        if (GUILayout.Button("Drop", GUILayout.Width(80f)))
+                        if (GUILayout.Button(lang.drop, GUILayout.Width(80f)))
                         {
                             DropSubFolder(folder);
                         }
@@ -215,12 +215,12 @@ namespace Gatosyocora.UnityMenuSimpler
                     {
                         foreach (var subFolder in folder.EditorWindowFolderList.ToArray())
                         {
-                            FolderRowField(subFolder, DropSubFolder, AllIn, DeleteSelf);
+                            FolderRowField(subFolder, lang, DropSubFolder, AllIn, RemoveSelf);
                         }
 
                         foreach (var info in folder.EditorWindowList.ToArray())
                         {
-                            FileField(info);
+                            FileField(info, lang);
                         }
                     }
                 }
@@ -228,7 +228,7 @@ namespace Gatosyocora.UnityMenuSimpler
 
         }
 
-        private static void FileField(EditorWindowInfo info)
+        private static void FileField(EditorWindowInfo info, LanguageTemplate lang)
         {
             var style = new GUIStyle(EditorStyles.label);
 
@@ -245,7 +245,7 @@ namespace Gatosyocora.UnityMenuSimpler
                 EditorGUILayout.LabelField(info.Name, style);
 
                 if (info.Applied)
-                    EditorGUILayout.LabelField("[Applied]");
+                    EditorGUILayout.LabelField(lang.applied);
 
                 // ファイルだけの移動はできなくてもよいので一時削除
                 //if (GUILayout.Button("x"))

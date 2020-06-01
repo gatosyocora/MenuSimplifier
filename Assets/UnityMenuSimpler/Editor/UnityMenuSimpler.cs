@@ -40,6 +40,13 @@ namespace Gatosyocora.UnityMenuSimpler
         };
         private LayoutType layoutType = LayoutType.Simple;
 
+        private enum Language
+        {
+            EN, JP
+        };
+        private Language lang = Language.EN;
+        private LanguageTemplate langLibrary;
+
         [MenuItem("GatoTool/UnityMenuSimpler")]
         public static void Open()
         {
@@ -48,6 +55,7 @@ namespace Gatosyocora.UnityMenuSimpler
 
         private void OnEnable()
         {
+            LoadLanguage(lang);
             editorWindowInfoList = LoadEditorWindowList();
             folderList = CreateExistFolderList(editorWindowInfoList);
         }
@@ -64,7 +72,14 @@ namespace Gatosyocora.UnityMenuSimpler
 
                     layoutType = (LayoutType)EditorGUILayout.EnumPopup(layoutType);
 
-                    if (GUILayout.Button("All Reset to Default"))
+                    using (var check = new EditorGUI.ChangeCheckScope())
+                    {
+                        lang = (Language)EditorGUILayout.EnumPopup(lang);
+
+                        if (check.changed) LoadLanguage(lang);
+                    }
+
+                    if (GUILayout.Button(langLibrary.allResetToDefault))
                     {
                         ReplaceMenuItem(editorWindowInfoList, true);
                     }
@@ -83,7 +98,7 @@ namespace Gatosyocora.UnityMenuSimpler
 
                 EditorGUILayout.Space();
 
-                if (GUILayout.Button("Add Folder"))
+                if (GUILayout.Button(langLibrary.addFolder))
                 {
                     folderListScrollPos.x = folderRect.width;
 
@@ -98,7 +113,7 @@ namespace Gatosyocora.UnityMenuSimpler
                 {
                     using (var check = new EditorGUI.ChangeCheckScope())
                     {
-                        if (GatoGUILayout.DropArea("Drop SubFolder", EditorGUIUtility.singleLineHeight * 4f))
+                        if (GatoGUILayout.DropArea(langLibrary.dropSubFolder, langLibrary, EditorGUIUtility.singleLineHeight * 4f))
                         {
                             if (!(selectedItem.ParentFolder is null) &&
                                 selectedItem is EditorWindowFolder selectedFolder)
@@ -141,7 +156,7 @@ namespace Gatosyocora.UnityMenuSimpler
 
                 using (new EditorGUI.DisabledScope(!editorWindowInfoList.Any(x => x.HasChanged)))
                 {
-                    if (GUILayout.Button("Show Changed"))
+                    if (GUILayout.Button(langLibrary.showChanged))
                     {
                         foreach (var file in editorWindowInfoList.Where(x => x.HasChanged))
                         {
@@ -149,14 +164,14 @@ namespace Gatosyocora.UnityMenuSimpler
                         }
                     }
 
-                    if (GUILayout.Button("Apply"))
+                    if (GUILayout.Button(langLibrary.apply))
                     {
                         ReplaceMenuItem(editorWindowInfoList);
                     }
 
                     EditorGUILayout.Space();
 
-                    if (GUILayout.Button("All Revert"))
+                    if (GUILayout.Button(langLibrary.allRevert))
                     {
                         RevertAllMenuItem();
                     }
@@ -180,7 +195,7 @@ namespace Gatosyocora.UnityMenuSimpler
 
                 foreach (var folder in folderList.Where(x => x.ParentFolder is null).ToList())
                 {
-                    GatoGUILayout.FolderRowField(folder,
+                    GatoGUILayout.FolderRowField(folder, langLibrary,
                         (f) => DropSubFolder(f),
                         () =>
                         {
@@ -209,7 +224,7 @@ namespace Gatosyocora.UnityMenuSimpler
                 {
                     using (var check = new EditorGUI.ChangeCheckScope())
                     {
-                        GatoGUILayout.FolderField(folder,
+                        GatoGUILayout.FolderField(folder, langLibrary,
                             (f) => MoveItem(f, selectedItem),
                             () => {
                                 foreach (var selectedItem in folderList.Where(x => x != folder && x.ParentFolder is null))
@@ -243,6 +258,15 @@ namespace Gatosyocora.UnityMenuSimpler
                     Repaint();
                 }
             }
+        }
+
+        /// <summary>
+        /// 言語を読み込む
+        /// </summary>
+        /// <param name="lang"></param>
+        private void LoadLanguage(Language lang)
+        {
+            langLibrary = Resources.Load<LanguageTemplate>("Language/" + lang.ToString());
         }
 
         /// <summary>
