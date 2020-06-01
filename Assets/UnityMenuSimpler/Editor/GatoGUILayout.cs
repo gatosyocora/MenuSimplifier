@@ -85,43 +85,7 @@ namespace Gatosyocora.UnityMenuSimpler
 
                         foreach (var editorWindowInfo in folder.EditorWindowList.ToList())
                         {
-                            var style = new GUIStyle(EditorStyles.label);
-
-                            using (new EditorGUILayout.HorizontalScope())
-                            {
-                                if (editorWindowInfo.HasChanged)
-                                {
-                                    style.normal.textColor = Color.red;
-                                }
-                                else
-                                {
-                                    style.normal.textColor = Color.black;
-                                }
-                                EditorGUILayout.LabelField(editorWindowInfo.Name, style);
-
-                                if (editorWindowInfo.Applied)
-                                    EditorGUILayout.LabelField("[Applied]");
-
-                                // ファイルだけの移動はできなくてもよいので一時削除
-                                //if (GUILayout.Button("x"))
-                                //{
-                                //    folder.EditorWindowList.Remove(editorWindowInfo);
-                                //    editorWindowInfo.DestMenuItemPath = string.Empty;
-                                //}
-                            }
-
-                            if (editorWindowInfo.HasChanged && !editorWindowInfo.Applied)
-                            {
-                                using (new EditorGUI.IndentLevelScope())
-                                {
-                                    var pathStyle = new GUIStyle(GUI.skin.label)
-                                    {
-                                        wordWrap = true
-                                    };
-                                    EditorGUILayout.LabelField(editorWindowInfo.Path, pathStyle);
-                                    EditorGUILayout.LabelField("→ " + editorWindowInfo.DestMenuItemPath, pathStyle);
-                                }
-                            }
+                            FileField(editorWindowInfo);
                         }
                     }
                 }
@@ -193,6 +157,116 @@ namespace Gatosyocora.UnityMenuSimpler
                 }
             }
             return false;
+        }
+
+        public static void FolderRowField(EditorWindowFolder folder, Action<EditorWindowFolder> DropSubFolder, Action AllIn, Action DeleteSelf)
+        {
+            var e = Event.current;
+
+            using (new EditorGUILayout.VerticalScope(GUI.skin.box))
+            {
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    if (folder.NameEdittable)
+                    {
+                        folder.Name = EditorGUILayout.TextField(folder.Name);
+
+                        if ((GUILayout.Button("OK", GUILayout.Width(50f)) ||
+                            e.Equals(Event.KeyboardEvent("return")))
+                            && !string.IsNullOrEmpty(folder.Name))
+                        {
+                            folder.NameEdittable = false;
+                            GUI.changed = true;
+                        }
+                    }
+                    else
+                    {
+                        folder.Foldout = EditorGUILayout.Foldout(folder.Foldout, folder.Name);
+                    }
+
+                    if (!folder.EditorWindowFolderList.Any() && !folder.EditorWindowList.Any())
+                    {
+                        using (new EditorGUI.DisabledScope(folder.NameEdittable))
+                        {
+                            if (GUILayout.Button("AllIn"))
+                            {
+                                AllIn();
+                            }
+                        }
+
+                        if (GUILayout.Button("Delete"))
+                        {
+                            DeleteSelf();
+                        }
+                    }
+
+                    if (!(folder.ParentFolder is null))
+                    {
+                        if (GUILayout.Button("Drop", GUILayout.Width(80f)))
+                        {
+                            DropSubFolder(folder);
+                        }
+                    }
+                }
+
+                if (folder.Foldout)
+                {
+                    using (new EditorGUI.IndentLevelScope())
+                    {
+                        foreach (var subFolder in folder.EditorWindowFolderList.ToArray())
+                        {
+                            FolderRowField(subFolder, DropSubFolder, AllIn, DeleteSelf);
+                        }
+
+                        foreach (var info in folder.EditorWindowList.ToArray())
+                        {
+                            FileField(info);
+                        }
+                    }
+                }
+            }
+
+        }
+
+        private static void FileField(EditorWindowInfo info)
+        {
+            var style = new GUIStyle(EditorStyles.label);
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                if (info.HasChanged)
+                {
+                    style.normal.textColor = Color.red;
+                }
+                else
+                {
+                    style.normal.textColor = Color.black;
+                }
+                EditorGUILayout.LabelField(info.Name, style);
+
+                if (info.Applied)
+                    EditorGUILayout.LabelField("[Applied]");
+
+                // ファイルだけの移動はできなくてもよいので一時削除
+                //if (GUILayout.Button("x"))
+                //{
+                //    folder.EditorWindowList.Remove(editorWindowInfo);
+                //    editorWindowInfo.DestMenuItemPath = string.Empty;
+                //}
+            }
+
+            if (info.HasChanged && !info.Applied)
+            {
+                using (new EditorGUI.IndentLevelScope())
+                {
+                    var pathStyle = new GUIStyle(GUI.skin.label)
+                    {
+                        wordWrap = true
+                    };
+                    EditorGUILayout.LabelField(info.Path, pathStyle);
+                    EditorGUILayout.LabelField("→ " + info.DestMenuItemPath, pathStyle);
+                }
+            }
         }
     }
 }

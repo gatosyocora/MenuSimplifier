@@ -34,6 +34,12 @@ namespace Gatosyocora.UnityMenuSimpler
 
         private EditorWindowBase selectedItem;
 
+        private enum LayoutType
+        {
+            Simple, Advanced
+        };
+        private LayoutType layoutType = LayoutType.Simple;
+
         [MenuItem("GatoTool/UnityMenuSimpler")]
         public static void Open()
         {
@@ -56,6 +62,8 @@ namespace Gatosyocora.UnityMenuSimpler
                 {
                     GUILayout.FlexibleSpace();
 
+                    layoutType = (LayoutType)EditorGUILayout.EnumPopup(layoutType);
+
                     if (GUILayout.Button("All Reset to Default"))
                     {
                         ReplaceMenuItem(editorWindowInfoList, true);
@@ -64,51 +72,13 @@ namespace Gatosyocora.UnityMenuSimpler
 
                 EditorGUILayout.Space();
 
-                using (var scroll = new EditorGUILayout.ScrollViewScope(folderListScrollPos,
-                                            alwaysShowVertical: false,
-                                            alwaysShowHorizontal: true))
-                using (var scope = new EditorGUILayout.HorizontalScope())
+                if (layoutType == LayoutType.Simple)
                 {
-                    folderListScrollPos = scroll.scrollPosition;
-                    folderRect = scope.rect;
-
-                    foreach (var folder in folderList.Where(x => x.ParentFolder is null).ToList())
-                    {
-                        using (var check = new EditorGUI.ChangeCheckScope())
-                        {
-                            GatoGUILayout.FolderField(folder,
-                                (f) => MoveItem(f, selectedItem),
-                                () => {
-                                    foreach (var selectedItem in folderList.Where(x => x != folder && x.ParentFolder is null))
-                                    {
-                                        MoveItem(folder, selectedItem);
-                                    }
-                                },
-                                () => folderList.Remove(folder),
-                                (f) => DropSubFolder(f),
-                                (f) =>
-                                {
-                                    selectedItem = f;
-                                    selectedItem.Selected = true;
-                                }
-                            );
-
-                            if (check.changed)
-                            {
-                                Repaint();
-                            }
-                        }
-                    }
-
-                    // 自動スクロール
-                    var e = Event.current;
-                    if (e.type == EventType.MouseDrag)
-                    {
-                        folderListScrollPos.x = Mathf.Clamp(
-                                                    (e.mousePosition.x - position.x - (scope.rect.width - position.width / 2)) / 2,
-                                                    0, position.width / 2);
-                        Repaint();
-                    }
+                    SimpleLayout();
+                }
+                else
+                {
+                    AdvancedLayout();
                 }
 
                 EditorGUILayout.Space();
@@ -124,19 +94,22 @@ namespace Gatosyocora.UnityMenuSimpler
                     folderList.Add(newFolder);
                 }
 
-                using (var check = new EditorGUI.ChangeCheckScope())
+                if (layoutType == LayoutType.Advanced)
                 {
-                    if (GatoGUILayout.DropArea("Drop SubFolder", EditorGUIUtility.singleLineHeight * 4f))
+                    using (var check = new EditorGUI.ChangeCheckScope())
                     {
-                        if (!(selectedItem.ParentFolder is null) && 
-                            selectedItem is EditorWindowFolder selectedFolder)
+                        if (GatoGUILayout.DropArea("Drop SubFolder", EditorGUIUtility.singleLineHeight * 4f))
                         {
-                            DropSubFolder(selectedFolder);
-                            GUI.changed = true;
+                            if (!(selectedItem.ParentFolder is null) &&
+                                selectedItem is EditorWindowFolder selectedFolder)
+                            {
+                                DropSubFolder(selectedFolder);
+                                GUI.changed = true;
+                            }
                         }
-                    }
 
-                    if (check.changed) Repaint();
+                        if (check.changed) Repaint();
+                    }
                 }
 
                 // ファイルだけの移動はできなくてもよいので一時削除
@@ -195,6 +168,79 @@ namespace Gatosyocora.UnityMenuSimpler
                 {
                     selectedItem.Selected = false;
                     selectedItem = null;
+                }
+            }
+        }
+
+        private void SimpleLayout()
+        {
+            using (var scroll = new EditorGUILayout.ScrollViewScope(folderListScrollPos))
+            {
+                folderListScrollPos = scroll.scrollPosition;
+
+                foreach (var folder in folderList.Where(x => x.ParentFolder is null).ToList())
+                {
+                    GatoGUILayout.FolderRowField(folder,
+                        (f) => DropSubFolder(f),
+                        () =>
+                        {
+                            foreach (var rootFolder in folderList.Where(x => x.ParentFolder is null))
+                            {
+                                MoveItem(folder, rootFolder);
+                            }
+                        },
+                        () => folderList.Remove(folder)
+                    );
+                }
+            }
+        }
+
+        private void AdvancedLayout()
+        {
+            using (var scroll = new EditorGUILayout.ScrollViewScope(folderListScrollPos,
+                            alwaysShowVertical: false,
+                            alwaysShowHorizontal: true))
+            using (var scope = new EditorGUILayout.HorizontalScope())
+            {
+                folderListScrollPos = scroll.scrollPosition;
+                folderRect = scope.rect;
+
+                foreach (var folder in folderList.Where(x => x.ParentFolder is null).ToList())
+                {
+                    using (var check = new EditorGUI.ChangeCheckScope())
+                    {
+                        GatoGUILayout.FolderField(folder,
+                            (f) => MoveItem(f, selectedItem),
+                            () => {
+                                foreach (var selectedItem in folderList.Where(x => x != folder && x.ParentFolder is null))
+                                {
+                                    MoveItem(folder, selectedItem);
+                                }
+                            },
+                            () => folderList.Remove(folder),
+                            (f) => DropSubFolder(f),
+                            (f) =>
+                            {
+                                selectedItem = f;
+                                selectedItem.Selected = true;
+                            }
+                        );
+
+                        if (check.changed)
+                        {
+                            Repaint();
+                        }
+                    }
+                }
+
+                // 自動スクロール
+                var e = Event.current;
+                if (e.type == EventType.MouseDrag)
+                {
+                    folderListScrollPos.x = Mathf.Clamp(
+                                                (e.mousePosition.x - position.x - (scope.rect.width - position.width / 2)) / 2,
+                                                0, position.width / 2);
+                    Repaint();
                 }
             }
         }
