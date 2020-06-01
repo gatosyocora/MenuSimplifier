@@ -421,6 +421,11 @@ namespace Gatosyocora.UnityMenuSimpler
             folderList = CreateExistFolderList(editorWindowInfoList);
         }
 
+        /// <summary>
+        /// アイテムのフォルダを移動させる
+        /// </summary>
+        /// <param name="folder">移動先のフォルダ</param>
+        /// <param name="movedItem">移動させるアイテム</param>
         private void MoveItem(EditorWindowFolder folder, EditorWindowBase movedItem)
         {
             if (!(selectedItem is null))
@@ -465,6 +470,9 @@ namespace Gatosyocora.UnityMenuSimpler
             folder.ParentFolder = null;
         }
 
+        /// <summary>
+        /// すべての変更を取り消す
+        /// </summary>
         private void RevertAllMenuItem()
         {
             editorWindowInfoList = LoadEditorWindowList();
