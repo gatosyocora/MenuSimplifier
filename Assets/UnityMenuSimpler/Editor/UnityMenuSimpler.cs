@@ -389,7 +389,7 @@ namespace Gatosyocora.UnityMenuSimpler
                 var resetPartten = @"(?<keyword>// "+Regex.Escape(TOOL_KEYWORD)+@" )(?<original>\[MenuItem\(.*\)\](\r\n|\r|\n))(?<replaced>\s*\[MenuItem\(.*\)\].*(\r\n|\r|\n))";
                 var resetMatch = Regex.Match(code, resetPartten);
 
-                var overrideWritePattern = @"(?<prefix>// UNITYMENUSIMPLER: \[MenuItem\(.*\)\]\s+\[MenuItem\("")(?<replaced>.*)(?<suffix>"".*\)\])";
+                var overrideWritePattern = @"(?<prefix>// UNITYMENUSIMPLER: \[MenuItem\(.*\)\]\s+\[MenuItem\("")(?<replaced>" + Regex.Escape(editorWindowInfo.Path) + @")(?<suffix>"".*\)\])";
                 var overrideWriteMatch = Regex.Match(code, overrideWritePattern);
 
                 if (reset)
@@ -408,7 +408,7 @@ namespace Gatosyocora.UnityMenuSimpler
                 {
                     // まだ変更していないならアトリビュートを複製によって追加し変更する
                     // 元のアトリビュートはコメントアウトしてキーワードをつけておく
-                    var duplicatePattern = @"(?<indent>( |\t)*)(?<prefix>\[MenuItem\("")(?<replaced>.*)(?<suffix>"".*\)\])(?<newline>(\r\n|\r|\n))";
+                    var duplicatePattern = @"(?<indent>( |\t)*)(?<prefix>\[MenuItem\("")(?<replaced>" + Regex.Escape(editorWindowInfo.Path) + @")(?<suffix>"".*\)\])(?<newline>(\r\n|\r|\n))";
                     code = Regex.Replace(code, duplicatePattern, m => $"{m.Groups["indent"]}// {TOOL_KEYWORD} {m.Groups["prefix"]}{m.Groups["replaced"]}{m.Groups["suffix"]}{m.Groups["newline"]}{m.Groups["indent"]}{m.Groups["prefix"]}{editorWindowInfo.DestMenuItemPath}{m.Groups["suffix"]}{m.Groups["newline"]}");
                 }
 
