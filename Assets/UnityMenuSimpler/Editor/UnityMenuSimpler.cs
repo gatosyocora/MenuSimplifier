@@ -133,6 +133,7 @@ namespace Gatosyocora.UnityMenuSimpler
                             selectedItem is EditorWindowFolder selectedFolder)
                         {
                             DropSubFolder(selectedFolder);
+                            GUI.changed = true;
                         }
                     }
 
