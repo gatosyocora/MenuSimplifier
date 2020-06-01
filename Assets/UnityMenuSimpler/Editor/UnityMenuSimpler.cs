@@ -417,8 +417,6 @@ namespace Gatosyocora.UnityMenuSimpler
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
-            editorWindowInfoList = LoadEditorWindowList();
-            folderList = CreateExistFolderList(editorWindowInfoList);
         }
 
         /// <summary>
