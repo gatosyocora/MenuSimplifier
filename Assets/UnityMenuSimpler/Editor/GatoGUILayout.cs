@@ -63,14 +63,11 @@ namespace Gatosyocora.UnityMenuSimpler
                     }
                     else
                     {
-                        using (new EditorGUILayout.HorizontalScope())
-                        {
-                            folder.Foldout = EditorGUILayout.Foldout(folder.Foldout, folder.Name);
+                        folder.Foldout = EditorGUILayout.Foldout(folder.Foldout, folder.Name);
 
-                            if (GUILayout.Button("Drop"))
-                            {
-                                DropSubFolder(folder);
-                            }
+                        if (GUILayout.Button("Drop"))
+                        {
+                            DropSubFolder(folder);
                         }
                     }
                 }
@@ -157,7 +154,6 @@ namespace Gatosyocora.UnityMenuSimpler
                     else if (e.type == EventType.MouseUp)
                     {
                         GUI.changed = true;
-                        Highlighter.Stop();
                         OnDrop(folder);
                         Highlighter.Stop();
                         GUIUtility.ExitGUI();
@@ -171,7 +167,6 @@ namespace Gatosyocora.UnityMenuSimpler
                         GUIUtility.ExitGUI();
                     }
                 }
-
             }
         }
 
