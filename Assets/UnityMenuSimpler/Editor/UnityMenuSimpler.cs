@@ -32,6 +32,8 @@ namespace Gatosyocora.UnityMenuSimpler
 
         private readonly static string TOOL_KEYWORD = "UNITYMENUSIMPLER:";
 
+        private EditorWindowBase selectedItem;
+
         [MenuItem("GatoTool/UnityMenuSimpler")]
         public static void Open()
         {
@@ -75,16 +77,20 @@ namespace Gatosyocora.UnityMenuSimpler
                         using (var check = new EditorGUI.ChangeCheckScope())
                         {
                             GatoGUILayout.FolderField(folder,
-                                (f) => {
-                                    // ファイルを移動させたときの処理
-                                    MoveFile(f, editorWindowInfoList.Where(x => x.Selected));
-
-                                    // フォルダを移動させたときの処理
-                                    MoveFolder(f, folderList.Where(x => x.Selected));
+                                (f) => MoveItem(f, selectedItem),
+                                () => {
+                                    foreach (var selectedItem in folderList.Where(x => x != folder && x.ParentFolder is null))
+                                    {
+                                        MoveItem(folder, selectedItem);
+                                    }
                                 },
-                                () => MoveFolder(folder, folderList.Where(x => x != folder && x.ParentFolder is null)),
                                 () => folderList.Remove(folder),
-                                (f) => DropSubFolder(f)
+                                (f) => DropSubFolder(f),
+                                (f) => 
+                                {
+                                    selectedItem = f;
+                                    selectedItem.Selected = true;
+                                }
                             );
 
                             if (check.changed)
@@ -188,6 +194,7 @@ namespace Gatosyocora.UnityMenuSimpler
                 // マウスドラッグが終わったのですべて選択解除
                 if (Event.current.type == EventType.MouseUp)
                 {
+                    selectedItem = null;
                     foreach (var folder in folderList)
                     {
                         folder.Selected = false;
@@ -423,53 +430,32 @@ namespace Gatosyocora.UnityMenuSimpler
             folderList = CreateExistFolderList(editorWindowInfoList);
         }
 
-        /// <summary>
-        /// 複数のMenuItemの情報（ファイル）をフォルダに移動させる
-        /// </summary>
-        /// <param name="folder"></param>
-        /// <param name="items"></param>
-        private void MoveFile(EditorWindowFolder folder, IEnumerable<EditorWindowInfo> items)
+        private void MoveItem(EditorWindowFolder folder, EditorWindowBase movedItem)
         {
-            foreach (var selectedItem in items)
+            if (movedItem == null || folder == movedItem) return;
+
+            if (movedItem is EditorWindowFolder movedFolder)
             {
-                if (folder.EditorWindowList.Contains(selectedItem)) continue;
+                if (movedFolder.IsParent(folder)) return;
 
-                selectedItem.Selected = false;
-                var filePath = selectedItem.Path.Split('/').Last();
-                folder.EditorWindowList.Add(selectedItem);
+                if (!(movedFolder.ParentFolder is null))
+                {
+                    movedFolder.ParentFolder.EditorWindowFolderList.Remove(movedFolder);
+                }
+                folder.EditorWindowFolderList.Add(movedFolder);
+                movedFolder.ParentFolder = folder;
             }
-        }
-
-        /// <summary>
-        /// 複数のフォルダを別のフォルダに移動させる
-        /// </summary>
-        /// <param name="folder">移動先のフォルダ</param>
-        /// <param name="selectedFolderList">移動させられるフォルダのリスト</param>
-        private void MoveFolder(EditorWindowFolder folder, IEnumerable<EditorWindowFolder> selectedFolderList, bool needRemoveFromParentList = true)
-        {
-            foreach (var selectedFolder in selectedFolderList)
+            else if (movedItem is EditorWindowInfo movedFile)
             {
-                if (selectedFolder == folder ||
-                    folder.EditorWindowFolderList.Contains(selectedFolder)||
-                    selectedFolder.EditorWindowFolderList.Contains(folder)) continue;
-
-                selectedFolder.Selected = false;
-
-                //サブフォルダを移動させたとき
-                if (selectedFolder.ParentFolder != null && needRemoveFromParentList)
+                if (!(movedFile.ParentFolder is null))
                 {
-                    selectedFolder.ParentFolder.EditorWindowFolderList.Remove(selectedFolder);
+                    movedFile.ParentFolder.EditorWindowList.Remove(movedFile);
                 }
-
-                if (needRemoveFromParentList)
-                {
-                    folder.EditorWindowFolderList.Add(selectedFolder);
-                    selectedFolder.ParentFolder = folder;
-                }
-
-                // フォルダに属するフォルダへの処理
-                MoveFolder(folder, selectedFolder.EditorWindowFolderList, false);
+                folder.EditorWindowList.Add(movedFile);
+                movedFile.ParentFolder = folder;
             }
+
+            movedItem.Selected = false;
         }
 
         /// <summary>
@@ -485,12 +471,6 @@ namespace Gatosyocora.UnityMenuSimpler
                 var parentFolder = folder.ParentFolder;
                 parentFolder.EditorWindowFolderList.Remove(folder);
                 folder.ParentFolder = null;
-            }
-
-            // 含まれているサブフォルダへの処理
-            foreach (var containFolder in folder.EditorWindowFolderList)
-            {
-                DropSubFolder(containFolder, false);
             }
         }
 

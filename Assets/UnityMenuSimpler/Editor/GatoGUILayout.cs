@@ -29,7 +29,7 @@ namespace Gatosyocora.UnityMenuSimpler
             return toggle;
         }
 
-        public static void FolderField(EditorWindowFolder folder, Action<EditorWindowFolder> OnDrop, Action AllIn, Action RemoveSelf, Action<EditorWindowFolder> DropSubFolder)
+        public static void FolderField(EditorWindowFolder folder, Action<EditorWindowFolder> OnDrop, Action AllIn, Action RemoveSelf, Action<EditorWindowFolder> DropSubFolder, Action<EditorWindowFolder> OnSelect)
         {
             var defaultColor = GUI.backgroundColor;
             if (folder.Selected) GUI.backgroundColor = Color.gray;
@@ -83,7 +83,7 @@ namespace Gatosyocora.UnityMenuSimpler
                     {
                         foreach (var editorWindowfolder in folder.EditorWindowFolderList.ToArray())
                         {
-                            FolderField(editorWindowfolder, OnDrop, AllIn, RemoveSelf, DropSubFolder);
+                            FolderField(editorWindowfolder, OnDrop, AllIn, RemoveSelf, DropSubFolder, OnSelect);
                         }
 
                         foreach (var editorWindowInfo in folder.EditorWindowList.ToList())
@@ -152,7 +152,7 @@ namespace Gatosyocora.UnityMenuSimpler
                     {
                         GUI.changed = true;
                         Highlighter.Stop();
-                        folder.Selected = !folder.Selected;
+                        OnSelect(folder);
 
                     }
                     else if (e.type == EventType.MouseUp)
