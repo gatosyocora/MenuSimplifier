@@ -423,6 +423,12 @@ namespace Gatosyocora.UnityMenuSimpler
 
         private void MoveItem(EditorWindowFolder folder, EditorWindowBase movedItem)
         {
+            if (!(selectedItem is null))
+            {
+                selectedItem.Selected = false;
+                selectedItem = null;
+            }
+
             if (movedItem == null || folder == movedItem) return;
 
             if (movedItem is EditorWindowFolder movedFolder)
@@ -444,12 +450,6 @@ namespace Gatosyocora.UnityMenuSimpler
                 }
                 folder.EditorWindowList.Add(movedFile);
                 movedFile.ParentFolder = folder;
-            }
-
-            if (!(selectedItem is null))
-            {
-                selectedItem.Selected = false;
-                selectedItem = null;
             }
         }
 
