@@ -48,11 +48,6 @@ namespace Gatosyocora.UnityMenuSimpler
 
         private void OnGUI()
         {
-            if (!(selectedItem is null))
-            {
-                selectedItem.Selected = true;
-            }
-
             if (editorWindowInfoList != null)
             {
                 EditorGUILayout.Space();
@@ -91,7 +86,11 @@ namespace Gatosyocora.UnityMenuSimpler
                                 },
                                 () => folderList.Remove(folder),
                                 (f) => DropSubFolder(f),
-                                (f) => selectedItem = f
+                                (f) =>
+                                {
+                                    selectedItem = f;
+                                    selectedItem.Selected = true;
+                                }
                             );
 
                             if (check.changed)
