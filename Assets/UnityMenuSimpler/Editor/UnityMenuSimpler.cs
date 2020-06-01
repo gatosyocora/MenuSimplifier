@@ -190,7 +190,8 @@ namespace Gatosyocora.UnityMenuSimpler
                 }
 
                 // マウスドラッグが終わったのですべて選択解除
-                if (Event.current.type == EventType.MouseUp)
+                if (Event.current.type == EventType.MouseUp && 
+                    !(selectedItem is null))
                 {
                     selectedItem.Selected = false;
                     selectedItem = null;
@@ -445,8 +446,11 @@ namespace Gatosyocora.UnityMenuSimpler
                 movedFile.ParentFolder = folder;
             }
 
-            selectedItem.Selected = false;
-            selectedItem = null;
+            if (!(selectedItem is null))
+            {
+                selectedItem.Selected = false;
+                selectedItem = null;
+            }
         }
 
         /// <summary>
