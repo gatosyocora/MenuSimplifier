@@ -40,5 +40,26 @@ namespace Gatosyocora.UnityMenuSimpler.DataClass
                 folder = folder.ParentFolder;
             }
         }
+
+
+        /// <summary>
+        /// 親であるか調べる
+        /// </summary>
+        /// <param name="item">子であるか調べる要素</param>
+        /// <returns></returns>
+        public bool IsParentOf(EditorWindowBase item)
+        {
+            var current = item;
+            while(current.ParentFolder != null)
+            {
+                if (current.ParentFolder == this)
+                {
+                    return true;
+                }
+                current = current.ParentFolder;
+            }
+
+            return false;
+        }
     }
 }
