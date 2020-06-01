@@ -442,10 +442,11 @@ namespace Gatosyocora.UnityMenuSimpler
                 }
 
                 File.WriteAllText(editorWindowInfo.FilePath, code);
+                editorWindowInfo.Applied = true;
             }
 
             AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+            AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceUncompressedImport);
         }
 
         /// <summary>

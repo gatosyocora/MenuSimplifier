@@ -30,5 +30,10 @@ namespace Gatosyocora.UnityMenuSimpler.DataClass
                          Path != DestMenuItemPath;
             }
         }
+
+        /// <summary>
+        /// 変更がファイルに適用済みかどうか
+        /// </summary>
+        public bool Applied { get; set; } = false;
     }
 }

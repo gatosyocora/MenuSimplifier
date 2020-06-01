@@ -99,6 +99,9 @@ namespace Gatosyocora.UnityMenuSimpler
                                 }
                                 EditorGUILayout.LabelField(editorWindowInfo.Name, style);
 
+                                if (editorWindowInfo.Applied)
+                                    EditorGUILayout.LabelField("[Applied]");
+
                                 // ファイルだけの移動はできなくてもよいので一時削除
                                 //if (GUILayout.Button("x"))
                                 //{
@@ -107,7 +110,7 @@ namespace Gatosyocora.UnityMenuSimpler
                                 //}
                             }
 
-                            if (editorWindowInfo.HasChanged)
+                            if (editorWindowInfo.HasChanged && !editorWindowInfo.Applied)
                             {
                                 using (new EditorGUI.IndentLevelScope())
                                 {
