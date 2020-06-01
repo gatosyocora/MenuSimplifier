@@ -151,15 +151,16 @@ namespace Gatosyocora.UnityMenuSimpler
                     if (e.type == EventType.MouseDown)
                     {
                         GUI.changed = true;
-                        Highlighter.Stop();
                         OnSelect(folder);
-
+                        Highlighter.Stop();
                     }
                     else if (e.type == EventType.MouseUp)
                     {
                         GUI.changed = true;
                         Highlighter.Stop();
                         OnDrop(folder);
+                        Highlighter.Stop();
+                        GUIUtility.ExitGUI();
                     }
                     else if (e.type == EventType.MouseDrag)
                     {
@@ -167,6 +168,7 @@ namespace Gatosyocora.UnityMenuSimpler
                         // TODO: 本当はFolder全体が囲まれるようにしたい
                         // Highlighter.HighlightIdentifierはうまくいかない
                         Highlighter.Highlight("UnityMenuSimpler", folder.Name);
+                        GUIUtility.ExitGUI();
                     }
                 }
 
@@ -184,6 +186,7 @@ namespace Gatosyocora.UnityMenuSimpler
                 {
                     GUI.changed = true;
                     Highlighter.Highlight("UnityMenuSimpler", label);
+                    GUIUtility.ExitGUI();
                 }
                 else if (e.type == EventType.MouseUp)
                 {
