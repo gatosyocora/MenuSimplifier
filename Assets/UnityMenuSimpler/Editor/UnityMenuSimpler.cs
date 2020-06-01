@@ -436,7 +436,7 @@ namespace Gatosyocora.UnityMenuSimpler
 
             if (movedItem is EditorWindowFolder movedFolder)
             {
-                if (movedFolder.IsParent(folder)) return;
+                if (movedFolder.IsParentOf(folder)) return;
 
                 if (!(movedFolder.ParentFolder is null))
                 {
