@@ -48,6 +48,11 @@ namespace Gatosyocora.UnityMenuSimpler
 
         private void OnGUI()
         {
+            if (!(selectedItem is null))
+            {
+                selectedItem.Selected = true;
+            }
+
             if (editorWindowInfoList != null)
             {
                 EditorGUILayout.Space();
@@ -86,11 +91,7 @@ namespace Gatosyocora.UnityMenuSimpler
                                 },
                                 () => folderList.Remove(folder),
                                 (f) => DropSubFolder(f),
-                                (f) => 
-                                {
-                                    selectedItem = f;
-                                    selectedItem.Selected = true;
-                                }
+                                (f) => selectedItem = f
                             );
 
                             if (check.changed)
@@ -128,12 +129,9 @@ namespace Gatosyocora.UnityMenuSimpler
                 {
                     if (GatoGUILayout.DropArea("Drop SubFolder", EditorGUIUtility.singleLineHeight * 4f))
                     {
-                        foreach (var selectedFolder in folderList.Where(x => x.Selected).ToArray())
+                        if (!(selectedItem.ParentFolder is null) && 
+                            selectedItem is EditorWindowFolder selectedFolder)
                         {
-                            selectedFolder.Selected = false;
-
-                            if (selectedFolder.ParentFolder is null) continue;
-
                             DropSubFolder(selectedFolder);
                         }
                     }
@@ -194,15 +192,8 @@ namespace Gatosyocora.UnityMenuSimpler
                 // マウスドラッグが終わったのですべて選択解除
                 if (Event.current.type == EventType.MouseUp)
                 {
+                    selectedItem.Selected = false;
                     selectedItem = null;
-                    foreach (var folder in folderList)
-                    {
-                        folder.Selected = false;
-                    }
-                    foreach (var file in editorWindowInfoList)
-                    {
-                        file.Selected = false;
-                    }
                 }
             }
         }
@@ -267,8 +258,7 @@ namespace Gatosyocora.UnityMenuSimpler
                             {
                                 Name = path.Split('/').Last(),
                                 Path = path,
-                                FilePath = GetFilePath(x),
-                                Selected = false
+                                FilePath = GetFilePath(x)
                             })
                         )
                         .Where(x => !string.IsNullOrEmpty(x.Path))
@@ -455,7 +445,8 @@ namespace Gatosyocora.UnityMenuSimpler
                 movedFile.ParentFolder = folder;
             }
 
-            movedItem.Selected = false;
+            selectedItem.Selected = false;
+            selectedItem = null;
         }
 
         /// <summary>
