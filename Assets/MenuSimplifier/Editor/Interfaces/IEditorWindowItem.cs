@@ -1,8 +1,8 @@
-﻿using Gatosyocora.UnityMenuSimpler.DataClass;
+﻿using Gatosyocora.MenuSimplifier.DataClass;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Gatosyocora.UnityMenuSimpler.Interfaces
+namespace Gatosyocora.MenuSimplifier.Interfaces
 {
     public interface IEditorWindowItem
     {

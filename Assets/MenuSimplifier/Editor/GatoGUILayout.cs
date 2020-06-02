@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.Linq;
-using static Gatosyocora.UnityMenuSimpler.UnityMenuSimpler;
-using Gatosyocora.UnityMenuSimpler.DataClass;
+using static Gatosyocora.MenuSimplifier.MenuSimplifier;
+using Gatosyocora.MenuSimplifier.DataClass;
 using System;
 
-namespace Gatosyocora.UnityMenuSimpler
+namespace Gatosyocora.MenuSimplifier
 {
     public static class GatoGUILayout
     {

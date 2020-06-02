@@ -6,16 +6,15 @@ using System.Reflection;
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
-using Gatosyocora.UnityMenuSimpler.DataClass;
-using Gatosyocora.UnityMenuSimpler.Interfaces;
+using Gatosyocora.MenuSimplifier.DataClass;
 
-// UnityMenuSimpler v1.0
+// MenuSimplifier v1.0
 // Copyright (c) 2020 gatosyocora
 // MIT License
 
-namespace Gatosyocora.UnityMenuSimpler
+namespace Gatosyocora.MenuSimplifier
 {
-    public class UnityMenuSimpler : EditorWindow
+    public class MenuSimplifier : EditorWindow
     {
         private List<EditorWindowInfo> editorWindowInfoList;
         private List<EditorWindowFolder> folderList;
@@ -47,10 +46,10 @@ namespace Gatosyocora.UnityMenuSimpler
         private Language lang = Language.EN;
         private LanguageTemplate langLibrary;
 
-        [MenuItem("GatoTool/UnityMenuSimpler")]
+        [MenuItem("GatoTool/MenuSimplifier")]
         public static void Open()
         {
-            GetWindow<UnityMenuSimpler>("UnityMenuSimpler");
+            GetWindow<MenuSimplifier>("MenuSimplifier");
         }
 
         private void OnEnable()

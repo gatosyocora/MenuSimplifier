@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Gatosyocora.UnityMenuSimpler.DataClass
+namespace Gatosyocora.MenuSimplifier.DataClass
 {
     [CreateAssetMenu]
     public class LanguageTemplate : ScriptableObject

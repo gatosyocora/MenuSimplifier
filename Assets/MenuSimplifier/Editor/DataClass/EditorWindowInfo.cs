@@ -1,8 +1,8 @@
-﻿using Gatosyocora.UnityMenuSimpler.Interfaces;
+﻿using Gatosyocora.MenuSimplifier.Interfaces;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Gatosyocora.UnityMenuSimpler.DataClass
+namespace Gatosyocora.MenuSimplifier.DataClass
 {
     /// <summary>
     /// EditorWindowスクリプトに関する情報のクラス
