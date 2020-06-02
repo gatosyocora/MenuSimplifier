@@ -49,7 +49,7 @@ namespace Gatosyocora.MenuSimplifier
         [MenuItem("GatoTool/MenuSimplifier")]
         public static void Open()
         {
-            GetWindow<MenuSimplifier>("MenuSimplifier");
+            GetWindow<MenuSimplifier>(nameof(MenuSimplifier));
         }
 
         private void OnEnable()
