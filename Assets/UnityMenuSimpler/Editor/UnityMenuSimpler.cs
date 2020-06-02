@@ -115,7 +115,8 @@ namespace Gatosyocora.UnityMenuSimpler
                     {
                         if (GatoGUILayout.DropArea(langLibrary.dropSubFolder, langLibrary, EditorGUIUtility.singleLineHeight * 4f))
                         {
-                            if (!(selectedItem.ParentFolder is null) &&
+                            if (!(selectedItem is null) &&
+                                !(selectedItem.ParentFolder is null) &&
                                 selectedItem is EditorWindowFolder selectedFolder)
                             {
                                 DropSubFolder(selectedFolder);
