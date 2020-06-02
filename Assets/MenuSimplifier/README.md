@@ -40,3 +40,6 @@ Simpleの機能に比べて, メニュー項目のドラッグ&ドロップに�
 Copyright (c) 2020 gatosyocora
 MIT License
 詳細は同封されたLICENSEファイルを見てください
+
+## 更新履歴
+v1.0 本ツールを作成
