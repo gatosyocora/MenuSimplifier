@@ -1,8 +1,4 @@
-﻿using Gatosyocora.MenuSimplifier.Interfaces;
-using System.Collections;
-using System.Collections.Generic;
-
-namespace Gatosyocora.MenuSimplifier.DataClass
+﻿namespace Gatosyocora.MenuSimplifier.DataClass
 {
     /// <summary>
     /// EditorWindowスクリプトに関する情報のクラス

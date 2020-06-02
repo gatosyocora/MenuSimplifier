@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 using System.Linq;
-using static Gatosyocora.MenuSimplifier.MenuSimplifier;
 using Gatosyocora.MenuSimplifier.DataClass;
 using System;
 
@@ -142,7 +139,7 @@ namespace Gatosyocora.MenuSimplifier
             var rect = EditorGUILayout.GetControlRect(true, height);
             GUI.Label(rect, label, GUI.skin.box);
             var e = Event.current;
-            if (rect.Contains(e.mousePosition)) 
+            if (rect.Contains(e.mousePosition))
             {
                 if (e.type == EventType.MouseDrag)
                 {

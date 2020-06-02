@@ -1,5 +1,4 @@
-﻿using Gatosyocora.MenuSimplifier.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Gatosyocora.MenuSimplifier.DataClass
 {
@@ -50,7 +49,7 @@ namespace Gatosyocora.MenuSimplifier.DataClass
         public bool IsParentOf(EditorWindowBase item)
         {
             var current = item;
-            while(current.ParentFolder != null)
+            while (current.ParentFolder != null)
             {
                 if (current.ParentFolder == this)
                 {

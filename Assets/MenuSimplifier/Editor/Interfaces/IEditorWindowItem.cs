@@ -1,6 +1,4 @@
 ﻿using Gatosyocora.MenuSimplifier.DataClass;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace Gatosyocora.MenuSimplifier.Interfaces
 {

@@ -178,7 +178,7 @@ namespace Gatosyocora.MenuSimplifier
                 }
 
                 // マウスドラッグが終わったのですべて選択解除
-                if (Event.current.type == EventType.MouseUp && 
+                if (Event.current.type == EventType.MouseUp &&
                     !(selectedItem is null))
                 {
                     selectedItem.Selected = false;
@@ -226,7 +226,8 @@ namespace Gatosyocora.MenuSimplifier
                     {
                         GatoGUILayout.FolderField(folder, langLibrary,
                             (f) => MoveItem(f, selectedItem),
-                            () => {
+                            () =>
+                            {
                                 foreach (var selectedItem in folderList.Where(x => x != folder && x.ParentFolder is null))
                                 {
                                     MoveItem(folder, selectedItem);
@@ -485,7 +486,7 @@ namespace Gatosyocora.MenuSimplifier
 
                 var code = File.ReadAllText(editorWindowInfo.FilePath);
 
-                var resetPartten = @"(?<keyword>// "+Regex.Escape(TOOL_KEYWORD)+@" )(?<original>\[MenuItem\(.*\)\](\r\n|\r|\n))(?<replaced>\s*\[MenuItem\(.*\)\].*(\r\n|\r|\n))";
+                var resetPartten = @"(?<keyword>// " + Regex.Escape(TOOL_KEYWORD) + @" )(?<original>\[MenuItem\(.*\)\](\r\n|\r|\n))(?<replaced>\s*\[MenuItem\(.*\)\].*(\r\n|\r|\n))";
                 var resetMatch = Regex.Match(code, resetPartten);
 
                 var overrideWritePattern = @"(?<prefix>// UNITYMENUSIMPLER: \[MenuItem\(.*\)\]\s+\[MenuItem\("")(?<replaced>" + Regex.Escape(editorWindowInfo.Path) + @")(?<suffix>"".*\)\])";
