@@ -10,7 +10,7 @@ using Gatosyocora.MenuSimplifier.DataClass;
 
 // MenuSimplifier v1.0
 // Copyright (c) 2020 gatosyocora
-// MIT License
+// MIT License | see LICENSE
 
 namespace Gatosyocora.MenuSimplifier
 {

@@ -4,6 +4,10 @@ using System.Linq;
 using Gatosyocora.MenuSimplifier.DataClass;
 using System;
 
+// MenuSimplifier v1.0
+// Copyright (c) 2020 gatosyocora
+// MIT License | see LICENSE
+
 namespace Gatosyocora.MenuSimplifier
 {
     public static class GatoGUILayout

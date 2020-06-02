@@ -1,5 +1,9 @@
 ﻿using System.Collections.Generic;
 
+// MenuSimplifier v1.0
+// Copyright (c) 2020 gatosyocora
+// MIT License | see LICENSE
+
 namespace Gatosyocora.MenuSimplifier.DataClass
 {
     /// <summary>

@@ -1,4 +1,8 @@
-﻿namespace Gatosyocora.MenuSimplifier.DataClass
+﻿// MenuSimplifier v1.0
+// Copyright (c) 2020 gatosyocora
+// MIT License | see LICENSE
+
+namespace Gatosyocora.MenuSimplifier.DataClass
 {
     /// <summary>
     /// EditorWindowスクリプトに関する情報のクラス
